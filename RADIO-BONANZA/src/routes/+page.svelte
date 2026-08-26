@@ -3,6 +3,7 @@
   import { currentSong } from '$lib/api/nrk_data';
 
   let { data } = $props();
+  // svelte-ignore state_referenced_locally
   let song = $state(data.song);
 
   onMount(() => {
@@ -16,4 +17,4 @@
 
 <h1>Radio Bonanza</h1>
 
-<p>Current song: {song}</p>
+<p>Current song: {song ? `${song.title} by ${song.description}` : 'No song is currently playing.'}</p>

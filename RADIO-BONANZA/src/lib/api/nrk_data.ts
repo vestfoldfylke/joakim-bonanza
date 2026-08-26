@@ -29,18 +29,18 @@ export default async function fetchNrkData(): Promise<NrkElement[]> {
     }
 }
 
-export async function currentSong() {
+export async function currentSong(): Promise<NrkElement | undefined> {
     const program = await fetchNrkData();
 
     if (!program || program.length === 0) {
-        return "No song is currently playing.";
+        return undefined;
     }
 
     for (let song of program) {
         if (song.relativeTimeType === 'Present' && song.type === 'Music') {
-            return `Song playing now: ${song.title} by ${song.description}`;
+            return song;
         }
     }
 
-    return "No song is currently playing.";
+    return undefined;
 }
