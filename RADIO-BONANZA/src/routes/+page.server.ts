@@ -1,11 +1,8 @@
-import getNrkData from '$lib/api/nrk';
+import fetchNrkData, { currentSong } from '$lib/api/nrk_data';
+import { onMount } from 'svelte';
 
 export const load = async () => {
-    const result = await getNrkData();
-    
-    for (let song of result) {
-        if (song.relativeTimeType === 'Present' && song.type === 'Music') {
-            console.log(`Song playing now: ${song.title} by ${song.description}`);
-        }
-    }
+  const song = await currentSong();
+  return { song };
 };
+
