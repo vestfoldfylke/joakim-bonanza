@@ -1,7 +1,7 @@
-import fetchNrkData, { currentSong } from '$lib/api/nrk_data';
+import { fetchNrkData, getCurrentSong } from '$lib/api/nrk-data';
 
 export const load = async () => {
-  const song = await currentSong();
-  return { song };
+  const currentSongPlaying = await getCurrentSong();
+  return { currentSongPlaying };
 };
 

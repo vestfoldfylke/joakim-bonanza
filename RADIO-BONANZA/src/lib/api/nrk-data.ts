@@ -1,4 +1,4 @@
-interface NrkElement {
+type NrkElement = {
     title: string,
     description: string,
     programId: string,
@@ -14,7 +14,7 @@ interface NrkElement {
     creators: string | null;
 }
 
-export default async function fetchNrkData(): Promise<NrkElement[]> {
+export async function fetchNrkData(): Promise<NrkElement[]> {
     try {
         const response = await fetch("https://psapi.nrk.no/channels/p3musikk/liveelements");
         if (!response.ok) {
@@ -29,18 +29,12 @@ export default async function fetchNrkData(): Promise<NrkElement[]> {
     }
 }
 
-export async function currentSong(): Promise<NrkElement | undefined> {
+export async function getCurrentSong(): Promise<NrkElement | undefined> {
     const program = await fetchNrkData();
 
     if (!program || program.length === 0) {
         return undefined;
     }
 
-    for (let song of program) {
-        if (song.relativeTimeType === 'Present' && song.type === 'Music') {
-            return song;
-        }
-    }
-
-    return undefined;
+    return program.find(song => song.relativeTimeType === 'Present' && song.type === 'Music');
 }
