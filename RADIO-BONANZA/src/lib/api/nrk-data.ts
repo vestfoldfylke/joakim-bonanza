@@ -14,6 +14,12 @@ type NrkElement = {
     creators: string | null;
 }
 
+export type ParsedNrkElement = Omit<NrkElement, 'startTime'> & {
+    startTime: Date,
+    songEndTime: Date
+};
+
+
 export async function fetchNrkData(): Promise<NrkElement[]> {
     try {
         const response = await fetch("https://psapi.nrk.no/channels/p3musikk/liveelements");
@@ -29,12 +35,33 @@ export async function fetchNrkData(): Promise<NrkElement[]> {
     }
 }
 
-export async function getCurrentSong(): Promise<NrkElement | undefined> {
+export async function getCurrentSong(): Promise<ParsedNrkElement | undefined> {
     const program = await fetchNrkData();
 
     if (!program || program.length === 0) {
         return undefined;
     }
 
-    return program.find(song => song.relativeTimeType === 'Present' && song.type === 'Music');
+    const currentSong = program.find(song => song.relativeTimeType === 'Present' && song.type === 'Music');
+    if (!currentSong) {
+        return undefined;
+    }
+
+    const startTimeMatch = currentSong.startTime.match(/Date\((\d+)/);
+    const ms = Number(startTimeMatch?.[1]); // "1787650985000" -> 1787650985000
+    const startTime = new Date(ms);
+
+    const durationMatch = currentSong?.duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+    const hours = Number(durationMatch?.[1] ?? 0);
+    const minutes = Number(durationMatch?.[2] ?? 0);
+    const seconds = Number(durationMatch?.[3] ?? 0);
+    const totalDurationInSeconds = hours * 3600 + minutes * 60 + seconds;
+
+    const songEndDate = new Date(startTime.getTime() + totalDurationInSeconds * 1000)
+
+    return {
+        ...currentSong,
+        startTime: startTime,
+        songEndTime: songEndDate
+    };
 }
