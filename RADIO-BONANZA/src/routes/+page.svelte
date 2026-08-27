@@ -54,9 +54,9 @@
 
     <div class="player-top">
         <img src={currentSong?.imageUrl} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
-        
         <div class="song-info">
-            <p>Current song: {currentSong?.title || 'No song is currently playing.'}</p>
+            <h1>{currentSong?.programTitle || 'No program currently playing'}</h1>
+            <p><b>{currentSong?.title || 'No song is currently playing.'}</b></p>
             <p>{currentSong?.description || ''}</p>
         </div>
 
@@ -77,9 +77,13 @@
 
 <style>
 
+.song-info {
+    margin: 0;
+}
+
 .player {
   background-color: white;    /* velg selv */
-  padding: 24px;
+  padding: 20px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -96,7 +100,7 @@
   display: flex;
   align-items: center;
   width: 50%;        /* flytt bredden hit fra #songLengthProgress */
-  margin: 0 auto;
+  margin: 0 auto 0 auto;
 }
 
 #songLengthProgress {
