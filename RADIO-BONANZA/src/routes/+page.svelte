@@ -2,17 +2,15 @@
     import { onMount } from 'svelte';
     import { getCurrentSong } from '$lib/api/nrk-data.js';
 
-    let { data } = $props();
     let progressPercent = $state(0);
     let currentSongTime = $state(0);
     let skipTransition = $state(false);
 
-    // svelte-ignore state_referenced_locally - svelte tror $derived passer bedre her fordi den ikke kan se at data.song faktisk brukes
-    let currentSong = $state(data.currentSongPlaying);
+    let currentSong = $state<Awaited<ReturnType<typeof getCurrentSong>>>();
     let formattedElapsed = $state('00:00:00');
     let formattedTotal = $state('00:00:00');
 
-    function updateProgressBar() {
+    function updateProgressBar(): void {
         if (!currentSong) return;
 
         const now = Date.now();
@@ -26,6 +24,11 @@
     }
 
     onMount(() => {
+        (async () => {
+            currentSong = await getCurrentSong();
+            updateProgressBar();
+        })();
+
         const interval = setInterval(async () => {
             updateProgressBar();
             const newSong = await getCurrentSong();
@@ -53,8 +56,8 @@
         <img src={currentSong?.imageUrl} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
         
         <div class="song-info">
-            <p>Current song: {currentSong ? `${currentSong.title}` : 'No song is currently playing.'}</p>
-            <p>{currentSong ? `By: ${currentSong.description}` : ''}</p>
+            <p>Current song: {currentSong?.title || 'No song is currently playing.'}</p>
+            <p>{currentSong?.description || ''}</p>
         </div>
 
         <div class="progress-row">
