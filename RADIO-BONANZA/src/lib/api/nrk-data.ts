@@ -14,7 +14,7 @@ type NrkElement = {
     creators: string | null;
 }
 
-type ParsedNrkElement = Omit<NrkElement, 'startTime'> & {
+export type ParsedNrkElement = Omit<NrkElement, 'startTime'> & {
     startTime: Date,
     songEndTime: Date
 };

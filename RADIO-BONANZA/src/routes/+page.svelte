@@ -1,12 +1,12 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { getCurrentSong } from '$lib/api/nrk-data.js';
+    import { getCurrentSong, type ParsedNrkElement } from '$lib/api/nrk-data.js';
 
     let progressPercent = $state(0);
     let currentSongTime = $state(0);
     let skipTransition = $state(false);
 
-    let currentSong = $state<Awaited<ReturnType<typeof getCurrentSong>>>();
+    let currentSong = $state<ParsedNrkElement>();
     let formattedElapsed = $state('00:00:00');
     let formattedTotal = $state('00:00:00');
 
