@@ -62,7 +62,7 @@ export async function getLatestSongs(amount: number): Promise<ParsedNrkElement[]
     if (!program || program.length === 0) return undefined;
 
     const latestSongs = program
-        .filter((song) => song.type === 'Music' && song.relativeTimeType === 'Past')
+        .filter((song) => song.type === 'News' && song.relativeTimeType === 'Past')
         .slice(-amount);
 
     const parsedSongs = await Promise.all(latestSongs.map((song) => getParsedType(song)));
@@ -70,16 +70,17 @@ export async function getLatestSongs(amount: number): Promise<ParsedNrkElement[]
     return parsedSongs.filter((song): song is ParsedNrkElement => song !== undefined);
 }
 
-export async function getCurrentSong(): Promise<ParsedNrkElement | undefined> {
+export async function getCurrentPlaying(includesNews: boolean = false): Promise<ParsedNrkElement | undefined> {
     const program = await fetchNrkData();
-
     if (!program || program.length === 0) return undefined;
 
-    let currentSong = program.find(song => song.relativeTimeType === 'Present' && song.type === 'Music');
-    
-    if (!currentSong) return undefined;
+    let currentPlaying = program.find(song => song.relativeTimeType === 'Present' && song.type === 'Music');
 
-    console.log(getLatestSongs(3));
+    if (!currentPlaying && includesNews) {
+        currentPlaying = program.find(song => song.relativeTimeType === 'Present' && song.type === 'News');
+    }
 
-    return getParsedType(currentSong);
+    if (!currentPlaying) return undefined;
+
+    return getParsedType(currentPlaying);
 }
