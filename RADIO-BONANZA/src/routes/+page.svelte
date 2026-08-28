@@ -56,8 +56,8 @@
         <img src={currentSong?.imageUrl} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
         <div class="song-info">
             <h1>{currentSong?.programTitle || 'No program currently playing'}</h1>
-            <p><b>{currentSong?.title || 'No song is currently playing.'}</b></p>
-            <p>{currentSong?.description || ''}</p>
+            <p style="font-weight:600; font-size: large;">{currentSong?.title || 'No song is currently playing.'}</p>
+            <p style="font-weight:100; font-size: medium;">{(currentSong?.description || '')}</p>
         </div>
 
         <div class="progress-row">
