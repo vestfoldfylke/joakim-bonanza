@@ -7,6 +7,7 @@
     let skipTransition = $state(false);
 
     let currentSong = $state<ParsedNrkElement>();
+    let lastFetchedTitle = $state<string>();
     let formattedElapsed = $state('00:00:00');
     let formattedTotal = $state('00:00:00');
 
@@ -16,30 +17,42 @@
         const now = Date.now();
         const start = currentSong.startTime.getTime();
         const end = currentSong.songEndTime.getTime();
-        progressPercent = Math.min(100, Math.max(0, ((now - start) / (end - start)) * 100));
-        currentSongTime = now - start;
 
-        formattedElapsed = currentSongTime ? new Date((Math.floor(currentSongTime / 1000)) * 1000).toISOString().substr(11, 8) : '00:00:00';
-        formattedTotal = currentSong ? new Date((Math.floor((currentSong.songEndTime.getTime() - currentSong.startTime.getTime()) / 1000)) * 1000).toISOString().substr(11, 8) : '00:00:00';
+        if (now >= end) {
+            currentSong = undefined;
+            progressPercent = 0;
+            currentSongTime = 0;
+            formattedElapsed = '00:00:00';
+            formattedTotal = '00:00:00';
+            return;
+        }
+
+        currentSongTime = now - start;
+        progressPercent = Math.min(100, Math.max(0, ((now - start) / (end - start)) * 100));
+        formattedElapsed = new Date((Math.floor(currentSongTime / 1000)) * 1000).toISOString().substr(11, 8);
+        formattedTotal = new Date((Math.floor((end - start) / 1000)) * 1000).toISOString().substr(11, 8);
     }
 
     onMount(() => {
         (async () => {
             currentSong = await getCurrentSong();
+            lastFetchedTitle = currentSong?.title;
             updateProgressBar();
         })();
 
         const interval = setInterval(async () => {
             updateProgressBar();
             const newSong = await getCurrentSong();
-            if (newSong?.title !== currentSong?.title) {
-                console.log(`Changed from ${currentSong?.title} to ${newSong?.title}`);
+
+            if (newSong?.title !== lastFetchedTitle) {
+                console.log(`Changed from ${lastFetchedTitle} to ${newSong?.title}`);
+                lastFetchedTitle = newSong?.title;
                 currentSong = newSong;
 
                 updateProgressBar();
                 skipTransition = true;
                 requestAnimationFrame(() => {
-                    skipTransition = false; // slå transition på igjen til neste oppdatering
+                    skipTransition = false;
                 });
 
             }
@@ -50,7 +63,7 @@
 
 </script>
 
-<div class="player" style="visibility: {currentSong ? 'visible' : 'visible'}">
+<div class="player" style="visibility: {currentSong ? 'visible' : 'hidden'}">
 
     <div class="player-top">
         <img src={currentSong?.imageUrl} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
