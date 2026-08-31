@@ -1,4 +1,4 @@
-type Program = {
+type RadioLiveElement = {
     title: string,
     description: string,
     programId: string,
@@ -14,12 +14,12 @@ type Program = {
     creators: string | null;
 }
 
-export type ParsedProgram = Omit<Program, 'startTime'> & {
+export type ParsedRadioLiveElement = Omit<RadioLiveElement, 'startTime'> & {
     startTime: Date,
     songEndTime: Date
 };
 
-function getConvertedTypeForEntry(entry: Program | undefined): ParsedProgram | undefined {
+function addDurationDetails(entry: RadioLiveElement): ParsedRadioLiveElement | undefined {
     if (!entry) return undefined;
 
     const startTimeMatch = entry.startTime.match(/Date\((\d+)/);
@@ -41,7 +41,7 @@ function getConvertedTypeForEntry(entry: Program | undefined): ParsedProgram | u
     };
 }
 
-export async function fetchNrkData(): Promise<Program[]> {
+export async function fetchNrkData(): Promise<RadioLiveElement[]> {
     try {
         const response = await fetch("https://psapi.nrk.no/channels/p3musikk/liveelements");
         if (!response.ok) {
@@ -56,21 +56,31 @@ export async function fetchNrkData(): Promise<Program[]> {
     }
 }
 
-export async function getLatestProgram(amount: number): Promise<ParsedProgram[] | undefined> {
+export async function getLatestProgram(amount: number): Promise<ParsedRadioLiveElement[] | undefined> {
     const program = await fetchNrkData();
 
     if (!program || program.length === 0) return undefined;
 
+    const seenSongs = new Set<string>();
+
     const latestPlayed = program
         .filter((entry) => entry.relativeTimeType === 'Past')
+        .filter((entry) => {
+            const key = `${entry.title}###${entry.description}`;
+            if (seenSongs.has(key)) return false;
+            seenSongs.add(key);
+            return true;
+        })
         .slice(-amount);
 
-    const parsedEntries = latestPlayed.map((entry) => getConvertedTypeForEntry(entry));
+    if (!latestPlayed) return undefined;
 
-    return parsedEntries.filter((entry): entry is ParsedProgram => entry !== undefined);
+    const liveElemetsWithDuration = latestPlayed.map((entry) => addDurationDetails(entry));
+
+    return liveElemetsWithDuration.filter((entry): entry is ParsedRadioLiveElement => entry !== undefined);
 }
 
-export async function getCurrentPlaying(includeNews: boolean = false): Promise<ParsedProgram | undefined> {
+export async function getCurrentPlaying(includeNews: boolean = false): Promise<ParsedRadioLiveElement | undefined> {
     const program = await fetchNrkData();
     if (!program || program.length === 0) return undefined;
 
@@ -82,5 +92,5 @@ export async function getCurrentPlaying(includeNews: boolean = false): Promise<P
 
     if (!currentPlaying) return undefined;
 
-    return getConvertedTypeForEntry(currentPlaying);
+    return addDurationDetails(currentPlaying);
 }

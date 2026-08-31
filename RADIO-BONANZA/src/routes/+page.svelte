@@ -1,12 +1,11 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { getCurrentPlaying, getLatestProgram, type ParsedProgram } from '$lib/api/nrk-data.js';
+    import { getCurrentPlaying, getLatestProgram, type ParsedRadioLiveElement } from '$lib/api/nrk-data.js';
     import fallbackImage from '$lib/assets/nrkp3-logo.jpg';
     import { env } from '$env/dynamic/public';
 
     let progressPercent = $state(0);
     let currentSongTime = $state(0);
-    let skipTransition = $state(false);
 
     // Config
     const parsedLastSongsAmount = Number(env.PUBLIC_PAST_SONGS_AMOUNT);
@@ -19,8 +18,8 @@
     const pastSongsAmount = isValidLastSongsAmount ? parsedLastSongsAmount : 3;
 
 
-    let currentSong = $state<ParsedProgram>();
-    let lastFewSongs = $state<ParsedProgram[]>();
+    let currentSong = $state<ParsedRadioLiveElement>();
+    let lastFewSongs = $state<ParsedRadioLiveElement[]>();
     let lastFetchedTitle = $state<string>();
     let formattedElapsed = $state('00:00:00');
     let formattedTotal = $state('00:00:00');
@@ -48,40 +47,26 @@
     }
 
     onMount(() => {
-        (async () => {
-            currentSong = await getCurrentPlaying(true);
-            lastFewSongs = await getLatestProgram(pastSongsAmount);
-            lastFetchedTitle = currentSong?.title;
+        let interval: ReturnType<typeof setInterval>;
 
-            skipTransition = true;
-            updateProgressBar();
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    skipTransition = false;
-                });
-            });
-        })();
-
-        const interval = setInterval(async () => {
+        async function refresh() {
             updateProgressBar();
             const newSong = await getCurrentPlaying(true);
 
             if (newSong?.title !== lastFetchedTitle) {
                 console.log(`Changed from ${lastFetchedTitle} to ${newSong?.title}`);
-                lastFewSongs = await getLatestProgram(pastSongsAmount);
+                lastFewSongs = [...(await getLatestProgram(pastSongsAmount) ?? [])].reverse();
                 lastFetchedTitle = newSong?.title;
                 currentSong = newSong;
 
                 updateProgressBar();
-                skipTransition = true;
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        skipTransition = false;
-                    });
-                });
-
             }
-        }, 1000);
+        }
+
+        refresh().then(() => {
+            interval = setInterval(refresh, 1000);
+        });
+
         return () => clearInterval(interval);
     });
 
@@ -100,13 +85,15 @@
 
             <div class="progress-row">
                 <span>{formattedElapsed}</span>
-                <div id="songLengthProgress">
-                    <div
-                        id="songLengthProgressBar"
-                        style="left: {progressPercent}%; transition: {skipTransition ? 'none' : 'left 1s linear'}"
-                    >
+                {#key currentSong?.title}
+                    <div id="songLengthProgress">
+                        <div
+                            id="songLengthProgressBar"
+                            style="left: {progressPercent}%"
+                        >
+                        </div>
                     </div>
-                </div>
+                {/key}
                 <span>{formattedTotal}</span>
             </div>
         </div>
@@ -115,7 +102,7 @@
 
     <div class=content>
         <!-- Denne var ny! ;D -->
-        {#each [...(lastFewSongs ?? [])].reverse() as song}
+        {#each lastFewSongs ?? [] as song}
             <div class=history-player>
                     <div class="player-top">
                         <img src={song?.imageUrl || fallbackImage} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
@@ -217,6 +204,7 @@
     background-color: rgb(255, 255, 255);
     transform: translate(-50%, -50%);
     left: 0%;
+    transition: left 1s linear;
 }
 
 </style>
