@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { getCurrentPlaying, getLatestSongs, type ParsedNrkElement } from '$lib/api/nrk-data.js';
+    import { getCurrentPlaying, getLatestProgram, type ParsedProgram } from '$lib/api/nrk-data.js';
     import fallbackImage from '$lib/assets/nrkp3-logo.jpg';
     import { env } from '$env/dynamic/public';
 
@@ -9,13 +9,18 @@
     let skipTransition = $state(false);
 
     // Config
-    const parsed_last_songs_amount = Number(env.PUBLIC_PAST_SONGS_AMOUNT);
-    const PAST_SONGS_AMOUNT = Number.isInteger(parsed_last_songs_amount) && parsed_last_songs_amount > 0 ? parsed_last_songs_amount : 3;
-    
-    const FALLBACK_IMAGE = fallbackImage;
+    const parsedLastSongsAmount = Number(env.PUBLIC_PAST_SONGS_AMOUNT);
+    const isValidLastSongsAmount = Number.isInteger(parsedLastSongsAmount) && parsedLastSongsAmount > 0;
 
-    let currentSong = $state<ParsedNrkElement>();
-    let lastFewSongs = $state<ParsedNrkElement[]>();
+    if (env.PUBLIC_PAST_SONGS_AMOUNT !== undefined && !isValidLastSongsAmount) {
+        console.warn(`PUBLIC_PAST_SONGS_AMOUNT must be a positive integer, got "${env.PUBLIC_PAST_SONGS_AMOUNT}". Falling back to 3.`);
+    }
+
+    const pastSongsAmount = isValidLastSongsAmount ? parsedLastSongsAmount : 3;
+
+
+    let currentSong = $state<ParsedProgram>();
+    let lastFewSongs = $state<ParsedProgram[]>();
     let lastFetchedTitle = $state<string>();
     let formattedElapsed = $state('00:00:00');
     let formattedTotal = $state('00:00:00');
@@ -45,7 +50,7 @@
     onMount(() => {
         (async () => {
             currentSong = await getCurrentPlaying(true);
-            lastFewSongs = await getLatestSongs(PAST_SONGS_AMOUNT);
+            lastFewSongs = await getLatestProgram(pastSongsAmount);
             lastFetchedTitle = currentSong?.title;
 
             skipTransition = true;
@@ -63,7 +68,7 @@
 
             if (newSong?.title !== lastFetchedTitle) {
                 console.log(`Changed from ${lastFetchedTitle} to ${newSong?.title}`);
-                lastFewSongs = await getLatestSongs(PAST_SONGS_AMOUNT);
+                lastFewSongs = await getLatestProgram(pastSongsAmount);
                 lastFetchedTitle = newSong?.title;
                 currentSong = newSong;
 
@@ -86,7 +91,7 @@
     <div class="player" style="visibility: {currentSong ? 'visible' : 'visible'}">
 
         <div class="player-top">
-            <img src={currentSong?.imageUrl || FALLBACK_IMAGE} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
+            <img src={currentSong?.imageUrl || fallbackImage} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
             <div class="song-info">
                 <h1>{currentSong?.programTitle || 'No program currently playing'}</h1>
                 <p style="font-weight:600; font-size: large;">{currentSong?.title || 'No song is currently playing.'}</p>
@@ -113,7 +118,7 @@
         {#each [...(lastFewSongs ?? [])].reverse() as song}
             <div class=history-player>
                     <div class="player-top">
-                        <img src={song?.imageUrl || FALLBACK_IMAGE} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
+                        <img src={song?.imageUrl || fallbackImage} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
                         <div class="song-info">
                             <h1>{song.title}</h1>
                             <p>{song.description}</p>

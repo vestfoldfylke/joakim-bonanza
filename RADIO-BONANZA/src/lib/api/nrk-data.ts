@@ -1,4 +1,4 @@
-type NrkElement = {
+type Program = {
     title: string,
     description: string,
     programId: string,
@@ -14,19 +14,19 @@ type NrkElement = {
     creators: string | null;
 }
 
-export type ParsedNrkElement = Omit<NrkElement, 'startTime'> & {
+export type ParsedProgram = Omit<Program, 'startTime'> & {
     startTime: Date,
     songEndTime: Date
 };
 
-function getConvertedTypeForSong(song: NrkElement | undefined): ParsedNrkElement | undefined {
-    if (!song) return undefined;
+function getConvertedTypeForEntry(entry: Program | undefined): ParsedProgram | undefined {
+    if (!entry) return undefined;
 
-    const startTimeMatch = song.startTime.match(/Date\((\d+)/);
+    const startTimeMatch = entry.startTime.match(/Date\((\d+)/);
     const ms = Number(startTimeMatch?.[1]);
     const songStartDate = new Date(ms);
 
-    const durationMatch = song.duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+    const durationMatch = entry.duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
     const hours = Number(durationMatch?.[1] ?? 0);
     const minutes = Number(durationMatch?.[2] ?? 0);
     const seconds = Number(durationMatch?.[3] ?? 0);
@@ -35,13 +35,13 @@ function getConvertedTypeForSong(song: NrkElement | undefined): ParsedNrkElement
     const songEndDate = new Date(songStartDate.getTime() + totalDurationInSeconds * 1000)
 
     return {
-        ...song,
+        ...entry,
         startTime: songStartDate,
         songEndTime: songEndDate
     };
 }
 
-export async function fetchNrkData(): Promise<NrkElement[]> {
+export async function fetchNrkData(): Promise<Program[]> {
     try {
         const response = await fetch("https://psapi.nrk.no/channels/p3musikk/liveelements");
         if (!response.ok) {
@@ -56,31 +56,31 @@ export async function fetchNrkData(): Promise<NrkElement[]> {
     }
 }
 
-export async function getLatestSongs(amount: number): Promise<ParsedNrkElement[] | undefined> {
+export async function getLatestProgram(amount: number): Promise<ParsedProgram[] | undefined> {
     const program = await fetchNrkData();
 
     if (!program || program.length === 0) return undefined;
 
-    const latestSongs = program
-        .filter((song) => song.relativeTimeType === 'Past')
+    const latestPlayed = program
+        .filter((entry) => entry.relativeTimeType === 'Past')
         .slice(-amount);
 
-    const parsedSongs = latestSongs.map((song) => getConvertedTypeForSong(song));
+    const parsedEntries = latestPlayed.map((entry) => getConvertedTypeForEntry(entry));
 
-    return parsedSongs.filter((song): song is ParsedNrkElement => song !== undefined);
+    return parsedEntries.filter((entry): entry is ParsedProgram => entry !== undefined);
 }
 
-export async function getCurrentPlaying(includesNews: boolean = false): Promise<ParsedNrkElement | undefined> {
+export async function getCurrentPlaying(includeNews: boolean = false): Promise<ParsedProgram | undefined> {
     const program = await fetchNrkData();
     if (!program || program.length === 0) return undefined;
 
-    let currentPlaying = program.find(song => song.relativeTimeType === 'Present' && song.type === 'Music');
+    let currentPlaying = program.find(entry => entry.relativeTimeType === 'Present' && entry.type === 'Music');
 
-    if (!currentPlaying && includesNews) {
-        currentPlaying = program.find(song => song.relativeTimeType === 'Present' && song.type === 'News');
+    if (!currentPlaying && includeNews) {
+        currentPlaying = program.find(entry => entry.relativeTimeType === 'Present' && (entry.type === 'News' || entry.type === 'Music'));
     }
 
     if (!currentPlaying) return undefined;
 
-    return getConvertedTypeForSong(currentPlaying);
+    return getConvertedTypeForEntry(currentPlaying);
 }
