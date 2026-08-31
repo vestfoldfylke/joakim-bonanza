@@ -1,14 +1,17 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { getCurrentPlaying, getLatestSongs, type ParsedNrkElement } from '$lib/api/nrk-data.js';
-    import fallbackImage from '$lib/assets/nrkp3-logo.jpg'; 
+    import fallbackImage from '$lib/assets/nrkp3-logo.jpg';
+    import { env } from '$env/dynamic/public';
 
     let progressPercent = $state(0);
     let currentSongTime = $state(0);
     let skipTransition = $state(false);
 
     // Config
-    const PAST_SONGS_AMOUNT = 3;
+    const parsed_last_songs_amount = Number(env.PUBLIC_PAST_SONGS_AMOUNT);
+    const PAST_SONGS_AMOUNT = Number.isInteger(parsed_last_songs_amount) && parsed_last_songs_amount > 0 ? parsed_last_songs_amount : 3;
+    
     const FALLBACK_IMAGE = fallbackImage;
 
     let currentSong = $state<ParsedNrkElement>();
@@ -101,7 +104,7 @@
         {#each lastFewSongs ?? [] as song}
             <div class=history-player>
                     <div class="player-top">
-                        <img src={currentSong?.imageUrl || FALLBACK_IMAGE} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
+                        <img src={song?.imageUrl || FALLBACK_IMAGE} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
                         <div class="song-info">
                             <h1>{song.title}</h1>
                             <p>{song.title}</p>

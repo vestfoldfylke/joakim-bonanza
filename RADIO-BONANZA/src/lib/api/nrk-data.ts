@@ -22,11 +22,11 @@ export type ParsedNrkElement = Omit<NrkElement, 'startTime'> & {
 async function getParsedType(song: NrkElement | undefined): Promise<ParsedNrkElement | undefined> {
     if (!song) return undefined;
 
-    const startTimeMatch = song?.startTime.match(/Date\((\d+)/);
+    const startTimeMatch = song.startTime.match(/Date\((\d+)/);
     const ms = Number(startTimeMatch?.[1]);
     const songStartDate = new Date(ms);
 
-    const durationMatch = song?.duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+    const durationMatch = song.duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
     const hours = Number(durationMatch?.[1] ?? 0);
     const minutes = Number(durationMatch?.[2] ?? 0);
     const seconds = Number(durationMatch?.[3] ?? 0);
@@ -62,7 +62,7 @@ export async function getLatestSongs(amount: number): Promise<ParsedNrkElement[]
     if (!program || program.length === 0) return undefined;
 
     const latestSongs = program
-        .filter((song) => song.type === 'News' && song.relativeTimeType === 'Past')
+        .filter((song) => song.relativeTimeType === 'Past')
         .slice(-amount);
 
     const parsedSongs = await Promise.all(latestSongs.map((song) => getParsedType(song)));
