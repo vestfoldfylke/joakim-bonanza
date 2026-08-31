@@ -1,4 +1,4 @@
-type NrkElement = {
+type RadioLiveElement = {
     title: string,
     description: string,
     programId: string,
@@ -14,13 +14,32 @@ type NrkElement = {
     creators: string | null;
 }
 
-export type ParsedNrkElement = Omit<NrkElement, 'startTime'> & {
+export type DetailedRadioLiveElement  = Omit<RadioLiveElement, 'startTime'> & {
     startTime: Date,
     songEndTime: Date
 };
 
+function addDurationDetails(liveElement: RadioLiveElement): DetailedRadioLiveElement {
+    const startTimeMatch = liveElement.startTime.match(/Date\((\d+)/);
+    const ms = Number(startTimeMatch?.[1]);
+    const songStartDate = new Date(ms);
 
-export async function fetchNrkData(): Promise<NrkElement[]> {
+    const durationMatch = liveElement.duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+    const hours = Number(durationMatch?.[1] ?? 0);
+    const minutes = Number(durationMatch?.[2] ?? 0);
+    const seconds = Number(durationMatch?.[3] ?? 0);
+    const totalDurationInSeconds = hours * 3600 + minutes * 60 + seconds;
+
+    const songEndDate = new Date(songStartDate.getTime() + totalDurationInSeconds * 1000)
+
+    return {
+        ...liveElement,
+        startTime: songStartDate,
+        songEndTime: songEndDate
+    };
+}
+
+export async function fetchNrkData(): Promise<RadioLiveElement[]> {
     try {
         const response = await fetch("https://psapi.nrk.no/channels/p3musikk/liveelements");
         if (!response.ok) {
@@ -35,33 +54,41 @@ export async function fetchNrkData(): Promise<NrkElement[]> {
     }
 }
 
-export async function getCurrentSong(): Promise<ParsedNrkElement | undefined> {
+export async function getLatestLiveElements(amount: number): Promise<DetailedRadioLiveElement [] | []> {
+    const liveElements = await fetchNrkData();
+
+    if (!liveElements || liveElements.length === 0) return [];
+
+    const seenSongs = new Set<string>();
+
+    const latestPlayed = liveElements
+        .filter((entry) => entry.relativeTimeType === 'Past')
+        .filter((entry) => {
+            const key = `${entry.title}###${entry.description}`;
+            if (seenSongs.has(key)) return false;
+            seenSongs.add(key);
+            return true;
+        })
+        .slice(-amount);
+
+    if (!latestPlayed) return [];
+
+    const liveElementsWithDuration = latestPlayed.map((entry) => addDurationDetails(entry));
+
+    return liveElementsWithDuration.filter((entry): entry is DetailedRadioLiveElement  => entry !== undefined);
+}
+
+export async function getCurrentPlaying(includeNews: boolean = false): Promise<DetailedRadioLiveElement  | undefined> {
     const program = await fetchNrkData();
+    if (!program || program.length === 0) return undefined;
 
-    if (!program || program.length === 0) {
-        return undefined;
+    let currentPlaying = program.find(entry => entry.relativeTimeType === 'Present' && entry.type === 'Music');
+
+    if (!currentPlaying && includeNews) {
+        currentPlaying = program.find(entry => entry.relativeTimeType === 'Present' && (entry.type === 'News' || entry.type === 'Music'));
     }
 
-    const currentSong = program.find(song => song.relativeTimeType === 'Present' && song.type === 'Music');
-    if (!currentSong) {
-        return undefined;
-    }
+    if (!currentPlaying) return undefined;
 
-    const startTimeMatch = currentSong.startTime.match(/Date\((\d+)/);
-    const ms = Number(startTimeMatch?.[1]); // "1787650985000" -> 1787650985000
-    const startTime = new Date(ms);
-
-    const durationMatch = currentSong?.duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-    const hours = Number(durationMatch?.[1] ?? 0);
-    const minutes = Number(durationMatch?.[2] ?? 0);
-    const seconds = Number(durationMatch?.[3] ?? 0);
-    const totalDurationInSeconds = hours * 3600 + minutes * 60 + seconds;
-
-    const songEndDate = new Date(startTime.getTime() + totalDurationInSeconds * 1000)
-
-    return {
-        ...currentSong,
-        startTime: startTime,
-        songEndTime: songEndDate
-    };
+    return addDurationDetails(currentPlaying);
 }
