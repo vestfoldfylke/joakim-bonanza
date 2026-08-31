@@ -93,8 +93,8 @@
         <div class="player-top">
             <img src={currentSong?.imageUrl || fallbackImage} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
             <div class="song-info">
-                <h1>{currentSong?.programTitle || 'No program currently playing'}</h1>
-                <p style="font-weight:600; font-size: large;">{currentSong?.title || 'No song is currently playing.'}</p>
+                <h1 style="font-weight:100; font-size:larger; color: rgb(0,0,0, 0.3)">{currentSong?.programTitle || 'No program currently playing'}</h1>
+                <h1 style="font-weight:600;">{currentSong?.title || 'No song is currently playing.'}</h1>
                 <p style="font-weight:100; font-size: medium;">{(currentSong?.description || '')}</p>
             </div>
 
