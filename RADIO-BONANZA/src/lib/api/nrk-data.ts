@@ -19,14 +19,12 @@ export type DetailedRadioLiveElement  = Omit<RadioLiveElement, 'startTime'> & {
     songEndTime: Date
 };
 
-function addDurationDetails(entry: RadioLiveElement): DetailedRadioLiveElement  | undefined {
-    if (!entry) return undefined;
-
-    const startTimeMatch = entry.startTime.match(/Date\((\d+)/);
+function addDurationDetails(liveElement: RadioLiveElement): DetailedRadioLiveElement {
+    const startTimeMatch = liveElement.startTime.match(/Date\((\d+)/);
     const ms = Number(startTimeMatch?.[1]);
     const songStartDate = new Date(ms);
 
-    const durationMatch = entry.duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+    const durationMatch = liveElement.duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
     const hours = Number(durationMatch?.[1] ?? 0);
     const minutes = Number(durationMatch?.[2] ?? 0);
     const seconds = Number(durationMatch?.[3] ?? 0);
@@ -35,7 +33,7 @@ function addDurationDetails(entry: RadioLiveElement): DetailedRadioLiveElement  
     const songEndDate = new Date(songStartDate.getTime() + totalDurationInSeconds * 1000)
 
     return {
-        ...entry,
+        ...liveElement,
         startTime: songStartDate,
         songEndTime: songEndDate
     };
@@ -57,13 +55,13 @@ export async function fetchNrkData(): Promise<RadioLiveElement[]> {
 }
 
 export async function getLatestLiveElements(amount: number): Promise<DetailedRadioLiveElement [] | []> {
-    const program = await fetchNrkData();
+    const liveElements = await fetchNrkData();
 
-    if (!program || program.length === 0) return [];
+    if (!liveElements || liveElements.length === 0) return [];
 
     const seenSongs = new Set<string>();
 
-    const latestPlayed = program
+    const latestPlayed = liveElements
         .filter((entry) => entry.relativeTimeType === 'Past')
         .filter((entry) => {
             const key = `${entry.title}###${entry.description}`;
