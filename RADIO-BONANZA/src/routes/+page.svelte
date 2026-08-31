@@ -48,7 +48,13 @@
             lastFewSongs = await getLatestSongs(PAST_SONGS_AMOUNT);
             lastFetchedTitle = currentSong?.title;
 
+            skipTransition = true;
             updateProgressBar();
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    skipTransition = false;
+                });
+            });
         })();
 
         const interval = setInterval(async () => {
@@ -63,7 +69,9 @@
                 updateProgressBar();
                 skipTransition = true;
                 requestAnimationFrame(() => {
-                    skipTransition = false;
+                    requestAnimationFrame(() => {
+                        skipTransition = false;
+                    });
                 });
 
             }
