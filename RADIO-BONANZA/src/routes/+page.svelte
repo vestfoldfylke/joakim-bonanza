@@ -109,7 +109,7 @@
 
     <div class=content>
         <!-- Denne var ny! ;D -->
-        {#each lastFewSongs ?? [] as song}
+        {#each [...(lastFewSongs ?? [])].reverse() as song}
             <div class=history-player>
                     <div class="player-top">
                         <img src={song?.imageUrl || FALLBACK_IMAGE} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
