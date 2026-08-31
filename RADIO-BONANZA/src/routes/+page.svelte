@@ -63,6 +63,7 @@
 
             if (newSong?.title !== lastFetchedTitle) {
                 console.log(`Changed from ${lastFetchedTitle} to ${newSong?.title}`);
+                lastFewSongs = await getLatestSongs(PAST_SONGS_AMOUNT);
                 lastFetchedTitle = newSong?.title;
                 currentSong = newSong;
 
@@ -115,7 +116,6 @@
                         <img src={song?.imageUrl || FALLBACK_IMAGE} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
                         <div class="song-info">
                             <h1>{song.title}</h1>
-                            <p>{song.title}</p>
                             <p>{song.description}</p>
                         </div>
                     </div>
