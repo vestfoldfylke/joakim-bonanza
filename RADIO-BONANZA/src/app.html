@@ -1,9 +1,21 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-color-scheme="light">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="text-scale" content="scale" />
+		<link
+			rel="stylesheet"
+			href="https://altinncdn.no/fonts/inter/v4.1/inter.css"
+			integrity="sha384-OcHzc/By/OPw9uJREawUCjP2inbOGKtKb4A/I2iXxmknUfog2H8Adx71tWVZRscD"
+			crossorigin="anonymous"
+		/>
+		<style>
+			body {
+				font-family: "Inter", sans-serif;
+				font-feature-settings: "cv05" 1; /* Enable lowercase l with tail */
+			}
+		</style>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
