@@ -17,12 +17,17 @@
 
     const pastSongsAmount = isValidLastSongsAmount ? parsedLastSongsAmount : 3;
 
+    const ALARM_ARTIST = 'Sondre Lerche';
 
     let currentSong = $state<DetailedRadioLiveElement>();
     let lastFewSongs = $state<DetailedRadioLiveElement[]>();
     let lastFetchedTitle = $state<string>();
     let formattedElapsed = $state('00:00:00');
     let formattedTotal = $state('00:00:00');
+
+    let isAlarmArtist = $derived(
+        currentSong?.description?.toLowerCase().includes(ALARM_ARTIST.toLowerCase()) ?? false
+    );
 
     function updateProgressBar(): void {
         if (!currentSong) return;
@@ -72,8 +77,13 @@
 
 
 </script>
+
 <div class="main">
-    <div class="player" style="visibility: {currentSong ? 'visible' : 'visible'}">
+    {#if isAlarmArtist}
+        <div class="alarm-banner">🚨 {ALARM_ARTIST.toUpperCase()} SPILLES AV! 🚨</div>
+    {/if}
+
+    <div class="player">
 
         <div class="player-top">
             <img src={currentSong?.imageUrl || fallbackImage} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
@@ -116,8 +126,6 @@
 
     </div>
 </div>
-
-
 
 <style>
 
@@ -205,6 +213,28 @@
     transform: translate(-50%, -50%);
     left: 0%;
     transition: left 1s linear;
+}
+
+.alarm-banner {
+    background-color: #d90429;
+    color: white;
+    font-weight: 800;
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 16px;
+    border-radius: 12px;
+    animation: alarm-pulse 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes alarm-pulse {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: scale(1.03);
+        opacity: 0.85;
+    }
 }
 
 </style>
