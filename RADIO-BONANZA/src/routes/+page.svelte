@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { getCurrentPlaying, getLatestProgram, type ParsedRadioLiveElement } from '$lib/api/nrk-data.js';
+    import { getCurrentPlaying, getLatestLiveElements, type DetailedRadioLiveElement } from '$lib/api/nrk-data.js';
     import fallbackImage from '$lib/assets/nrkp3-logo.jpg';
     import { env } from '$env/dynamic/public';
 
@@ -18,8 +18,8 @@
     const pastSongsAmount = isValidLastSongsAmount ? parsedLastSongsAmount : 3;
 
 
-    let currentSong = $state<ParsedRadioLiveElement>();
-    let lastFewSongs = $state<ParsedRadioLiveElement[]>();
+    let currentSong = $state<DetailedRadioLiveElement>();
+    let lastFewSongs = $state<DetailedRadioLiveElement[]>();
     let lastFetchedTitle = $state<string>();
     let formattedElapsed = $state('00:00:00');
     let formattedTotal = $state('00:00:00');
@@ -55,7 +55,7 @@
 
             if (newSong?.title !== lastFetchedTitle) {
                 console.log(`Changed from ${lastFetchedTitle} to ${newSong?.title}`);
-                lastFewSongs = [...(await getLatestProgram(pastSongsAmount) ?? [])].reverse();
+                lastFewSongs = [...(await getLatestLiveElements(pastSongsAmount) ?? [])].reverse();
                 lastFetchedTitle = newSong?.title;
                 currentSong = newSong;
 

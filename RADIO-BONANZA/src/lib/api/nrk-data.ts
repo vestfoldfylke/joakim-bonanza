@@ -14,12 +14,12 @@ type RadioLiveElement = {
     creators: string | null;
 }
 
-export type ParsedRadioLiveElement = Omit<RadioLiveElement, 'startTime'> & {
+export type DetailedRadioLiveElement  = Omit<RadioLiveElement, 'startTime'> & {
     startTime: Date,
     songEndTime: Date
 };
 
-function addDurationDetails(entry: RadioLiveElement): ParsedRadioLiveElement | undefined {
+function addDurationDetails(entry: RadioLiveElement): DetailedRadioLiveElement  | undefined {
     if (!entry) return undefined;
 
     const startTimeMatch = entry.startTime.match(/Date\((\d+)/);
@@ -56,10 +56,10 @@ export async function fetchNrkData(): Promise<RadioLiveElement[]> {
     }
 }
 
-export async function getLatestProgram(amount: number): Promise<ParsedRadioLiveElement[] | undefined> {
+export async function getLatestLiveElements(amount: number): Promise<DetailedRadioLiveElement [] | []> {
     const program = await fetchNrkData();
 
-    if (!program || program.length === 0) return undefined;
+    if (!program || program.length === 0) return [];
 
     const seenSongs = new Set<string>();
 
@@ -73,14 +73,14 @@ export async function getLatestProgram(amount: number): Promise<ParsedRadioLiveE
         })
         .slice(-amount);
 
-    if (!latestPlayed) return undefined;
+    if (!latestPlayed) return [];
 
-    const liveElemetsWithDuration = latestPlayed.map((entry) => addDurationDetails(entry));
+    const liveElementsWithDuration = latestPlayed.map((entry) => addDurationDetails(entry));
 
-    return liveElemetsWithDuration.filter((entry): entry is ParsedRadioLiveElement => entry !== undefined);
+    return liveElementsWithDuration.filter((entry): entry is DetailedRadioLiveElement  => entry !== undefined);
 }
 
-export async function getCurrentPlaying(includeNews: boolean = false): Promise<ParsedRadioLiveElement | undefined> {
+export async function getCurrentPlaying(includeNews: boolean = false): Promise<DetailedRadioLiveElement  | undefined> {
     const program = await fetchNrkData();
     if (!program || program.length === 0) return undefined;
 
