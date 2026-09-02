@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '@digdir/designsystemet-web';
 	import '@digdir/designsystemet-css';
 	import '@digdir/designsystemet-css/theme';
 	import favicon from '$lib/assets/favicon.svg';
