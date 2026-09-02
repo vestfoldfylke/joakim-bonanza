@@ -80,17 +80,20 @@
 
 <div class="main">
     {#if isAlarmArtist}
-        <div class="alarm-banner">🚨 {ALARM_ARTIST.toUpperCase()} SPILLES AV! 🚨</div>
+        <div class="ds-alert" data-color="danger" role="alert">
+            <h2 class="ds-heading" data-size="xs" style="margin-bottom:var(--ds-size-2)">Advarsel til Rune!!</h2>
+            <p class="ds-paragraph">{ALARM_ARTIST.toWellFormed()} spilles nå!!!!!! skru ned volumet på radio'n 🤢</p>
+        </div>
     {/if}
 
-    <div class="player">
+    <div class="player ds-card" data-variant="default">
 
         <div class="player-top">
             <img src={currentSong?.imageUrl || fallbackImage} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
             <div class="song-info">
-                <h1 style="font-weight:100; font-size:larger; color: rgb(0,0,0, 0.3)">{currentSong?.programTitle || 'No program currently playing'}</h1>
-                <h1 style="font-weight:600;">{currentSong?.title || 'No song is currently playing.'}</h1>
-                <p style="font-weight:100; font-size: medium;">{(currentSong?.description || '')}</p>
+                <h1 class="ds-heading" data-size="xs">{currentSong?.programTitle || 'No program currently playing'}</h1>
+                <h1 class="ds-heading" data-size="lg">{currentSong?.title || 'No song is currently playing.'}</h1>
+                <p class="ds-paragraph" data-size="md">{(currentSong?.description || '')}</p>
             </div>
 
             <div class="progress-row">
@@ -107,18 +110,18 @@
                 <span>{formattedTotal}</span>
             </div>
         </div>
-        
+
     </div>
 
     <div class=content>
         <!-- Denne var ny! ;D -->
         {#each lastFewSongs ?? [] as song}
-            <div class=history-player>
+            <div class="history-player ds-card" data-variant="tinted">
                     <div class="player-top">
                         <img src={song?.imageUrl || fallbackImage} alt={currentSong ? `${currentSong.title} by ${currentSong.description}` : ''} height="200" width="200" loading="lazy" />
                         <div class="song-info">
-                            <h1>{song.title}</h1>
-                            <p>{song.description}</p>
+                            <h1 class="ds-heading" data-size="xs">{song.title}</h1>
+                            <p class="ds-paragraph" data-size="sm">{song.description}</p>
                         </div>
                     </div>
             </div>
@@ -132,9 +135,8 @@
 .main {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: 20px;
-    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    gap: var(--ds-size-6);
+    padding: var(--ds-size-6);
 }
 
 .main img {
@@ -145,15 +147,8 @@
 .content {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin: 0 0 0 50px;
-}
-
-.history-player {
-    background-color: rgb(247, 247, 247);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: 0px;
+    gap: var(--ds-size-3);
+    margin: 0 0 0 var(--ds-size-14);
 }
 
 .history-player img {
@@ -164,32 +159,24 @@
 }
 
 .history-player .player-top {
-    gap: 20px;
+    gap: var(--ds-size-6);
 }
 
-.history-player h1 {
-    font-size: 1.2rem;
+.history-player .ds-heading {
     margin: 0;
 }
-
-.player {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
 
 .player-top {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 50px;
+  gap: var(--ds-size-15);
 }
 
 .progress-row {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: var(--ds-size-4);
   width: 50%;
   margin: 0 auto 0 auto;
 }
@@ -198,7 +185,7 @@
     position: relative;
     width: 80%;
     height: 2px;
-    background-color: rgb(221, 221, 221);
+    background-color: var(--ds-color-neutral-border-subtle);
     margin: 0 auto;
 }
 
@@ -207,23 +194,12 @@
     top: 50%;
     width: 8px;
     height: 8px;
-    border-radius: 50%;
-    border: 1px solid rgb(126, 126, 126);
-    background-color: rgb(255, 255, 255);
+    border-radius: var(--ds-border-radius-full);
+    border: 1px solid var(--ds-color-neutral-border-default);
+    background-color: var(--ds-color-neutral-background-default);
     transform: translate(-50%, -50%);
     left: 0%;
     transition: left 1s linear;
-}
-
-.alarm-banner {
-    background-color: #d90429;
-    color: white;
-    font-weight: 800;
-    font-size: 1.5rem;
-    text-align: center;
-    padding: 16px;
-    border-radius: 12px;
-    animation: alarm-pulse 0.6s ease-in-out infinite alternate;
 }
 
 @keyframes alarm-pulse {
