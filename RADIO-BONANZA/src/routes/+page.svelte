@@ -80,7 +80,10 @@
 
 <div class="main">
     {#if isAlarmArtist}
-        <div class="alarm-banner">🚨 {ALARM_ARTIST.toUpperCase()} SPILLES AV! 🚨</div>
+        <div class="ds-alert" data-color="danger" role="alert">
+            <h2 class="ds-heading" data-size="xs" style="margin-bottom:var(--ds-size-2)">Advarsel til Rune!!</h2>
+            <p class="ds-paragraph">{ALARM_ARTIST.toWellFormed()} spilles nå!!!!!! skru ned volumet på radio'n 🤢</p>
+        </div>
     {/if}
 
     <div class="player ds-card" data-variant="default">
@@ -197,17 +200,6 @@
     transform: translate(-50%, -50%);
     left: 0%;
     transition: left 1s linear;
-}
-
-.alarm-banner {
-    background-color: var(--ds-color-danger-base-default);
-    color: var(--ds-color-danger-base-contrast-default);
-    font-weight: 800;
-    font-size: 1.5rem;
-    text-align: center;
-    padding: var(--ds-size-4);
-    border-radius: var(--ds-border-radius-lg);
-    animation: alarm-pulse 0.6s ease-in-out infinite alternate;
 }
 
 @keyframes alarm-pulse {
