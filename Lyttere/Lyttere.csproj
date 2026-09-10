@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+      <UseAppHost>false</UseAppHost>
+  </PropertyGroup>
+
 </Project>
