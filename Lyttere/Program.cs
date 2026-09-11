@@ -1,4 +1,6 @@
 using Direct;
+using EventBased;
+
 internal class Program
 {
     private static void Main(string[] args)
@@ -17,5 +19,15 @@ internal class Program
 
         // Part 2 extra: create a second Person subscribed to the same AlarmClock and call
         // StartAlarm once — both should wake up.
+
+        AlarmClockEvent clockEvent1 = new AlarmClockEvent();
+        PersonEvent personEvent1 = new PersonEvent("Joakim", clockEvent1);
+        PersonEvent personEvent2 = new PersonEvent("Rune", clockEvent1);
+
+        AlarmClockEvent clockEvent2 = new AlarmClockEvent();
+        PersonEvent personEvent3 = new PersonEvent("Jørgen", clockEvent2);
+
+        clockEvent1.StartAlarm("God morgen fra event!");
+        Console.WriteLine($"{personEvent3.name} {(personEvent3.hasWokenUp ? "er våken" : "sover fremdeles!")}");
     }
 }
