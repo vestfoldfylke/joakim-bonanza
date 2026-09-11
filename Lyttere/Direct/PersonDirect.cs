@@ -1,17 +1,14 @@
-namespace Direct;
+namespace Lyttere.Direct;
 
-public class PersonDirect
+public class PersonDirect(string name)
 {
     // TODO: store the person's name (constructor parameter).
-    public String name;
-
-    public PersonDirect(String name)
-    {
-        this.name = name;
-    }
+    public string Name { get; private set; } = name;
 
     // TODO: expose something a test can check afterwards, e.g. a bool HasWokenUp.
-    public bool HasWokenUp = false;
+
+    // Jeg vil at HasWokenUp skal være tilgjengelig å lese, men ikke mulig å endre - for at man skal kunne vite om Jørgen sover eller ikke
+    public bool HasWokenUp { get; private set; } = false;
 
     public void WakeUp(string message)
     {
@@ -19,6 +16,6 @@ public class PersonDirect
         // TODO: print something like "{name} woke up because: {message}".
 
         HasWokenUp = true;
-        Console.WriteLine($"{name} woke up because: {message}");
+        Console.WriteLine($"{Name} woke up because: {message}");
     }
 }

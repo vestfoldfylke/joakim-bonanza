@@ -1,5 +1,5 @@
-using Direct;
-using EventBased;
+using Lyttere.Direct;
+using Lyttere.EventBased;
 
 internal class Program
 {
@@ -28,6 +28,6 @@ internal class Program
         PersonEvent personEvent3 = new PersonEvent("Jørgen", clockEvent2);
 
         clockEvent1.StartAlarm("God morgen fra event!");
-        Console.WriteLine($"{personEvent3.name} {(personEvent3.hasWokenUp ? "er våken" : "sover fremdeles!")}");
+        Console.WriteLine($"{personEvent3.Name} {(personEvent3.hasWokenUp ? "er våken" : "sover fremdeles!")}");
     }
 }

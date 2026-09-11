@@ -1,4 +1,4 @@
-namespace EventBased;
+namespace Lyttere.EventBased;
 
 public class AlarmClockEvent
 {
@@ -10,5 +10,19 @@ public class AlarmClockEvent
     {
         // TODO: raise the event, e.g. OnAlarmTriggered?.Invoke(message);
         OnAlarmTriggered?.Invoke(message);
+
+        /* Til Jørgen:
+
+        "?" Sjekker om det finnes noen subscribers, og returnerer null hvis det ikke er noen
+
+        Alternativ måte ?:
+
+        Action OnAlarmTriggered = action;
+        if (OnAlarmTriggered != null)
+        {
+            OnAlarmTriggered();
+        }
+
+        */
     }
 }

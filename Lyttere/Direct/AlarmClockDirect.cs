@@ -1,20 +1,13 @@
-using System.IO.Pipes;
+namespace Lyttere.Direct;
 
-namespace Direct;
-
-public class AlarmClockDirect
+public class AlarmClockDirect(PersonDirect person)
 {
     // TODO: hold a reference to one Person (constructor parameter, stored in a field).
-    public PersonDirect person;
-
-    public AlarmClockDirect(PersonDirect person)
-    {
-        this.person = person;
-    }
+    private PersonDirect _person { get; set; } = person;
 
     public void StartAlarm(string message)
     {
         // TODO: call the person's wake-up method directly, passing `message`.
-        person.WakeUp(message);
+        _person.WakeUp(message);
     }
 }
