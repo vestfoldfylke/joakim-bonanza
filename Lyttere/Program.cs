@@ -1,18 +1,14 @@
-﻿using balleA;
-using balleB;
+internal class Program
+{
+    private static void Main(string[] args)
+    {
+        // Part 1: once Direct.AlarmClock / Direct.Person are implemented, try them here.
+        // Create a Person, create an AlarmClock that holds it, call StartAlarm.
 
-// Variant A
+        // Part 2: once EventBased.AlarmClock / EventBased.Person are implemented, try them here.
+        // Create an AlarmClock, create a Person that subscribes to it, call StartAlarm.
 
-var _sesh = new Session();
-Console.WriteLine(_sesh.IsLoaded);
-
-new ManagerDirect(_sesh).DeleteActive();
-Console.WriteLine(_sesh.IsLoaded);
-
-// Variant B
-var sl = new SessionListener();
-var sl2 = new SessionListener();
-
-sl.InitRunAction();
-sl2.InitRunAction();
-
+        // Part 2 extra: create a second Person subscribed to the same AlarmClock and call
+        // StartAlarm once — both should wake up.
+    }
+}
