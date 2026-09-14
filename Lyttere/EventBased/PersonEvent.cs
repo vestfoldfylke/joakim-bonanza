@@ -3,14 +3,12 @@ namespace Lyttere.EventBased;
 public class PersonEvent
 {
     // TODO: store the person's name (constructor parameter).
-    public string Name;
-    public AlarmClockEvent AlarmClock;
+    public string Name { get; set; }
     public bool hasWokenUp = false;
 
     public PersonEvent(string name, AlarmClockEvent alarmClock)
     {
         Name = name;
-        AlarmClock = alarmClock;
 
         // TODO: subscribe WakeUp to alarmClock.OnAlarmTriggered here.
         alarmClock.OnAlarmTriggered += WakeUp;
