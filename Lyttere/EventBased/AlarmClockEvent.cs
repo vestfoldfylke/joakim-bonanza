@@ -11,16 +11,16 @@ public class AlarmClockEvent
         // TODO: raise the event, e.g. OnAlarmTriggered?.Invoke(message);
         OnAlarmTriggered?.Invoke(message);
 
-        /* Til Jørgen:
+        /*
 
-        "?" Sjekker om det finnes noen subscribers, og returnerer null hvis det ikke er noen
+        ?. hopper over kallet hvis OnAlarmTriggered er null. Ingenting returneres — Invoke er void.
 
         Alternativ måte ?:
 
-        Action OnAlarmTriggered = action;
-        if (OnAlarmTriggered != null)
+        Action<string> handler = OnAlarmTriggered;
+        if (handler != null)
         {
-            OnAlarmTriggered();
+            handler(message);
         }
 
         */
