@@ -3,7 +3,7 @@ namespace Lyttere.Direct;
 public class PersonDirect(string name)
 {
     // TODO: store the person's name (constructor parameter).
-    public string Name { get; private set; } = name;
+    public string Name { get; set; } = name;
 
     // TODO: expose something a test can check afterwards, e.g. a bool HasWokenUp.
 
