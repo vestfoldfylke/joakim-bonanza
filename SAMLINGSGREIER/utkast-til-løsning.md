@@ -46,5 +46,5 @@ Denne bestemmer du egt selv siden du er brukeren
 ### Forslag til første funksjonalitet
 - Mulighet for å åpne appen, liste opp hvilke gjenstander som finnes i samlingen, og kunne registrere en ny gjenstand. (men du kan velge annet)
 
-
-
+### Mens R og J er på konferanse
+Bare herje løs! En god lærdom er at det kan ofte lønne seg å starte helt på nytt i blant, så om det blir en PR med masse kommentarer, kan det hende det er like greit å gå tilbake til tegnebrettet.
