@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Samlingsgreier.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7d8865fca6482604581a7b533cc5a5164fc8a626")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+653b349d4a123d1e6b8c2c895345e8f4da2bf3a1")]
 [assembly: System.Reflection.AssemblyProductAttribute("Samlingsgreier.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Samlingsgreier.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

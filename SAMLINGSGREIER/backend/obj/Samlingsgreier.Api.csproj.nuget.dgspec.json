@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Dev\\Repositories\\joakim-bonanza\\SAMLINGSGREIER\\backend\\Samlingsgreier.Api.csproj": {}
+    "d:\\Dev\\Repositories\\joakim-bonanza\\SAMLINGSGREIER\\backend\\Samlingsgreier.Api.csproj": {}
   },
   "projects": {
-    "D:\\Dev\\Repositories\\joakim-bonanza\\SAMLINGSGREIER\\backend\\Samlingsgreier.Api.csproj": {
+    "d:\\Dev\\Repositories\\joakim-bonanza\\SAMLINGSGREIER\\backend\\Samlingsgreier.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Dev\\Repositories\\joakim-bonanza\\SAMLINGSGREIER\\backend\\Samlingsgreier.Api.csproj",
+        "projectUniqueName": "d:\\Dev\\Repositories\\joakim-bonanza\\SAMLINGSGREIER\\backend\\Samlingsgreier.Api.csproj",
         "projectName": "Samlingsgreier.Api",
-        "projectPath": "D:\\Dev\\Repositories\\joakim-bonanza\\SAMLINGSGREIER\\backend\\Samlingsgreier.Api.csproj",
+        "projectPath": "d:\\Dev\\Repositories\\joakim-bonanza\\SAMLINGSGREIER\\backend\\Samlingsgreier.Api.csproj",
         "packagesPath": "C:\\Users\\joa20073\\.nuget\\packages\\",
-        "outputPath": "D:\\Dev\\Repositories\\joakim-bonanza\\SAMLINGSGREIER\\backend\\obj\\",
+        "outputPath": "d:\\Dev\\Repositories\\joakim-bonanza\\SAMLINGSGREIER\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\joa20073\\AppData\\Roaming\\NuGet\\NuGet.Config"
