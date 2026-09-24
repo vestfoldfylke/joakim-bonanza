@@ -29,7 +29,7 @@
 <h1>Samlingen min</h1>
 
 {#if isLoading}
-    <p>Loading data..</p>
+    <p>Henter data..</p>
 {:else if error}
 	<p>Klarte ikke hente gjenstander: {error}</p>
 {:else if items.length === 0}
