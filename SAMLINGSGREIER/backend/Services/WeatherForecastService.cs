@@ -1,7 +1,7 @@
 using Backend.Models;
 namespace Backend.Services;
 
-public class WeatherForecastService : IWeatherForecastService
+public class WeatherForecastService
 {
     private static readonly string[] Summaries =
     {
