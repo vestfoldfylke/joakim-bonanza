@@ -1,4 +1,5 @@
 using Backend.Services;
+
 namespace Backend.Endpoints;
 
 public static class ItemEndpoints
