@@ -5,9 +5,9 @@ public static class ItemEndpoints
 {
     public static void MapItemEndpoints(this WebApplication app)
     {
-        app.MapGet("/items", (IItemRepository service) =>
+        app.MapGet("/items", (IItemRepository repository) =>
         {
-            return service.GetAllItems();
+            return repository.GetAllItems();
         })
         .WithName("GetItems");
     }
