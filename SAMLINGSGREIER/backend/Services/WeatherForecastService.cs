@@ -1,5 +1,5 @@
-namespace Backend.Services;
 using Backend.Models;
+namespace Backend.Services;
 
 public class WeatherForecastService : IWeatherForecastService
 {
