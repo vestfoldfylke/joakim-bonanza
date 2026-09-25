@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte"
 	import { PUBLIC_API_URL } from "$env/static/public"
-	import type { Item } from "$lib/types"
-	import { isItem } from "$lib/types"
+	import { type Item, isItem } from "$lib/types"
 
 	let items = $state<Item[]>([])
 	let error = $state<string | null>(null)
