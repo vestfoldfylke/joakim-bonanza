@@ -9,7 +9,7 @@
 
 	onMount(async () => {
 		try {
-			const response = await fetch(new URL("items", PUBLIC_API_URL))
+			const response = await fetch(`${PUBLIC_API_URL}/items`.replace(/\/$/, ""))
 			if (!response.ok) {
 				throw new Error(`HTTP ${response.status}`)
 			}
