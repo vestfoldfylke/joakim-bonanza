@@ -1,6 +1,5 @@
 using Backend.Services;
 using Backend.Endpoints;
-using System.ComponentModel;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
@@ -9,12 +8,6 @@ builder.Services.AddScoped<IItemRepository, ItemRepository>();
 var allowedOrigins = builder.Configuration
     .GetSection("Cors:AllowedOrigins")
     .Get<string[]>() ?? [];
-
-if (builder.Environment.IsDevelopment() && allowedOrigins.Length == 0)
-{
-    throw new WarningException(
-        "Cors:AllowedOrigins er tom. Opprett appsettings.Development.json med frontend-URL, se README.");
-}
 
 builder.Services.AddCors(options =>
 {
@@ -25,6 +18,12 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+if (allowedOrigins.Length == 0)
+{
+    app.Logger.LogWarning(
+        "Cors:AllowedOrigins er tom. Alle cross-origin-kall vil bli avvist. Se README.");
+}
 
 if (app.Environment.IsDevelopment())
 {
