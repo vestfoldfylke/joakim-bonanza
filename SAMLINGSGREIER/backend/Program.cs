@@ -1,5 +1,6 @@
 using Backend.Services;
 using Backend.Endpoints;
+using System.ComponentModel;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
@@ -11,7 +12,7 @@ var allowedOrigins = builder.Configuration
 
 if (builder.Environment.IsDevelopment() && allowedOrigins.Length == 0)
 {
-    throw new InvalidOperationException(
+    throw new WarningException(
         "Cors:AllowedOrigins er tom. Opprett appsettings.Development.json med frontend-URL, se README.");
 }
 
