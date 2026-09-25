@@ -14,6 +14,7 @@ Opprett en fil i backend root som heter 'appsettings.Development.json' og legg i
   }
 }
 ```
+Note: `WithOrigins([])` krever eksakt origin (f.eks `http://localhost:5173` og ikke `http://localhost:5173/`)
 
 # appsettings.json
 Opprett enda en fil i backend root som heter 'appsettings.json' og legg inn følgene:
