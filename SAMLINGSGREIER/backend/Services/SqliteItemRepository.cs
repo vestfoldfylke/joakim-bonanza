@@ -14,4 +14,19 @@ public class SqliteItemRepository : IItemRepository
     }
 
     public async Task<IEnumerable<Item>> GetAllItemsAsync() => await _db.Items.ToListAsync();
+
+    public async Task<Item> AddItemAsync(AddItemRequest request)
+    {
+        var item = new Item(
+            Guid.NewGuid(),
+            request.Name,
+            request.Category,
+            DateTime.UtcNow
+        );
+
+        _db.Items.Add(item);
+        await _db.SaveChangesAsync();
+
+        return item;
+    }
 }
