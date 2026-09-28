@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
-builder.Services.AddScoped<IItemRepository, ItemRepository>();
+builder.Services.AddScoped<IItemRepository, SqliteItemRepository>();
 
 builder.Services.AddDbContext<CollectionDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Samling")));
