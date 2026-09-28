@@ -1,5 +1,6 @@
 using Backend.Data;
 using Backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services;
 
@@ -12,5 +13,5 @@ public class SqliteItemRepository : IItemRepository
         _db = db;
     }
 
-    public IEnumerable<Item> GetAllItems() => _db.Items.ToList();
+    public async Task<IEnumerable<Item>> GetAllItemsAsync() => await _db.Items.ToListAsync();
 }

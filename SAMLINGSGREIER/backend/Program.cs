@@ -9,6 +9,7 @@ builder.Services.AddScoped<IItemRepository, SqliteItemRepository>();
 
 builder.Services.AddDbContext<CollectionDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Samling")));
+    
 
 var allowedOrigins = builder.Configuration
     .GetSection("Cors:AllowedOrigins")
