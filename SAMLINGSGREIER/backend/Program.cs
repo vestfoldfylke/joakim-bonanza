@@ -1,9 +1,14 @@
 using Backend.Services;
 using Backend.Endpoints;
+using Backend.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
+
+builder.Services.AddDbContext<CollectionDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("Samling")));
 
 var allowedOrigins = builder.Configuration
     .GetSection("Cors:AllowedOrigins")

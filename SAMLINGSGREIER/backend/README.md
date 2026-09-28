@@ -21,6 +21,9 @@ Opprett enda en fil i backend root som heter 'appsettings.json' og legg inn føl
 
 ```json
 {
+  "ConnectionStrings": {
+    "Samling": "Data Source=samling.db"
+  },
   "Logging": {
     "LogLevel": {
       "Default": "Information",
