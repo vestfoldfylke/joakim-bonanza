@@ -18,7 +18,7 @@ namespace backend.Migrations
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Category = table.Column<string>(type: "TEXT", nullable: false),
-                    AddedAt = table.Column<DateTimeOffset>(type: "TEXT", nullable: false)
+                    AddedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
