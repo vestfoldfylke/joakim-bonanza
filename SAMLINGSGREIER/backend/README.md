@@ -37,6 +37,8 @@ Opprett enda en fil i backend root som heter 'appsettings.json' og legg inn føl
 
 # How to run
 
-in a new terminal, type `dotnet run` to run the backend from the /backend folder.
+To initiate tools, type `dotnet tool restore`
 
-To get the database, type `dotnet ef database update` in the same terminal.
+To get the database, type `dotnet ef database update` in a terminal from the /backend folder (cd SAMLINGSGREIER/backend)
+
+in the same terminal, type `dotnet run` to run the backend from the /backend folder.
