@@ -7,9 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IItemRepository, SqliteItemRepository>();
 
+var connectionString = builder.Configuration.GetConnectionString("Samling")
+    ?? throw new InvalidOperationException(
+        "Missing 'ConnectionStrings:Samling' in appsettings.json. Look at README.md.");
+
 builder.Services.AddDbContext<CollectionDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("Samling")));
-    
+    options.UseSqlite(connectionString));
+
 
 var allowedOrigins = builder.Configuration
     .GetSection("Cors:AllowedOrigins")
