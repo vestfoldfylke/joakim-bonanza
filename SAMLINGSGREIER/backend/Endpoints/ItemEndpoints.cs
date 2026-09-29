@@ -15,6 +15,17 @@ public static class ItemEndpoints
 
         app.MapPost("items", async (AddItemRequest request, IItemRepository repository) =>
         {
+            var errors = new Dictionary<string, string[]>();
+
+            if(string.IsNullOrWhiteSpace(request.Name))
+                errors["name"] = ["Name cannot be empty"];
+            
+            if(string.IsNullOrWhiteSpace(request.Category))
+                errors["category"] = ["Category cannot be empty"];
+            
+            if (errors.Count > 0)
+                return Results.ValidationProblem(errors);
+
             var item = await repository.AddItemAsync(request);
             return Results.Created($"/items/{item.Id}", item);
         })
