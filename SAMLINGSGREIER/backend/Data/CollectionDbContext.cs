@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Backend.Models;
 
 namespace Backend.Data;
@@ -7,10 +8,18 @@ public class CollectionDbContext : DbContext
 {
     public DbSet<Item> Items { get; set; }
 
-    public CollectionDbContext(DbContextOptions<CollectionDbContext> options) : base(options) {  }
+    public CollectionDbContext(DbContextOptions<CollectionDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        var utcConverter = new ValueConverter<DateTime, DateTime>(
+            v => v.ToUniversalTime(),
+            v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+
+        modelBuilder.Entity<Item>()
+            .Property(e => e.AddedAt)
+            .HasConversion(utcConverter);
+
         modelBuilder.Entity<Item>().HasData(
             new
             {
