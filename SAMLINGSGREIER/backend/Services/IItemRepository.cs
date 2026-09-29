@@ -4,5 +4,8 @@ namespace Backend.Services;
 
 public interface IItemRepository
 {
-    IEnumerable<Item> GetAllItems();
+    Task<IEnumerable<Item>> GetAllItemsAsync();
+    Task<Item> AddItemAsync(AddItemRequest request);
+    Task<Item?> GetItemByIdAsync(Guid id);
+
 }

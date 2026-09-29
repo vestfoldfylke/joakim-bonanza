@@ -21,6 +21,9 @@ Opprett enda en fil i backend root som heter 'appsettings.json' og legg inn føl
 
 ```json
 {
+  "ConnectionStrings": {
+    "Samling": "Data Source=samling.db"
+  },
   "Logging": {
     "LogLevel": {
       "Default": "Information",
@@ -34,4 +37,12 @@ Opprett enda en fil i backend root som heter 'appsettings.json' og legg inn føl
 
 # How to run
 
-in a new terminal, type `dotnet run` to run the backend from the /backend folder.
+Fra `SAMLINGSGREIER/backend`:
+
+1. Installer dotnet-verktøyene som prosjektet bruker (f.eks. `dotnet-ef`) med `dotnet tool restore`
+
+2. Hent NuGet pakker med `dotnet restore`
+
+3. Bygg databasen ved å kjøre migrations med `dotnet ef database update`
+
+4. Start serveren / backend med `dotnet run`
