@@ -34,8 +34,9 @@ public static class ItemEndpoints
                 return Results.ValidationProblem(errors);
 
             var item = await repository.AddItemAsync(request);
+            
+            return Results.CreatedAtRoute("GetItemById", new { id = item.Id }, item);
 
-            return Results.Created($"/items/{item.Id}", item);
         })
         .WithName("AddItem");
     }
