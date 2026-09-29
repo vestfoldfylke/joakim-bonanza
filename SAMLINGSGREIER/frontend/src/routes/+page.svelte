@@ -3,6 +3,9 @@
 	import { PUBLIC_API_URL } from "$env/static/public"
 	import { type Item, isItem } from "$lib/types"
 
+	// components
+    import Spinner from "$lib/components/Spinner.svelte";
+
 	let items = $state<Item[]>([])
 	let error = $state<string | null>(null)
 	let isLoading = $state(true)
@@ -30,7 +33,7 @@
 <h1>Samlingen min</h1>
 
 {#if isLoading}
-	<p>Henter data..</p>
+	<Spinner />
 {:else if error}
 	<p>Klarte ikke hente gjenstander: {error}</p>
 {:else if items.length === 0}
@@ -38,7 +41,16 @@
 {:else}
 	<ul>
 		{#each items as item (item.id)}
-			<li>{item.name} ({item.category})</li>
+			<button type="button" class="ds-card" data-color="neutral">
+				<div class="ds-card__block">
+					<h2 class="ds-heading">{item.name} ({item.category})</h2>
+				</div>
+				<div class="ds-card__block">
+					<p class="ds-paragraph">Kategori: {item.category}</p>
+					<p class="ds-paragraph">Opprettet: {new Date(item.addedAt).toLocaleString()}</p>
+					<p class="ds-paragraph">Id: {item.id}</p>
+				</div>
+			</button>
 		{/each}
 	</ul>
 {/if}
