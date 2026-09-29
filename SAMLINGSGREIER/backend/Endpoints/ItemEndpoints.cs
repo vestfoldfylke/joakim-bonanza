@@ -21,7 +21,7 @@ public static class ItemEndpoints
         .WithName("GetItemById");
 
 
-        app.MapPost("items", async (AddItemRequest request, IItemRepository repository) =>
+        app.MapPost("/items", async (AddItemRequest request, IItemRepository repository) =>
         {
             var errors = new Dictionary<string, string[]>();
 
