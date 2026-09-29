@@ -1,9 +1,9 @@
 <script lang="ts">
-  interface Props {
-    label?: string
-    size?: "sm" | "md" | "lg"
-  }
-  let { label = "Laster inn..", size = "sm" }: Props = $props()
+	interface Props {
+		label?: string
+		size?: "sm" | "md" | "lg"
+	}
+	let { label = "Laster inn..", size = "sm" }: Props = $props()
 </script>
 
 <div class="spinner-wrapper">

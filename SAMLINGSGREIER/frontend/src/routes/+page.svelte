@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { onMount } from "svelte"
 	import { PUBLIC_API_URL } from "$env/static/public"
-	import { type Item, isItem } from "$lib/types"
-
 	// components
-    import Spinner from "$lib/components/Spinner.svelte";
+	import Spinner from "$lib/components/Spinner.svelte"
+	import { type Item, isItem } from "$lib/types"
 
 	let items = $state<Item[]>([])
 	let error = $state<string | null>(null)
