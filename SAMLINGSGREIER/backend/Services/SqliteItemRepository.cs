@@ -29,4 +29,7 @@ public class SqliteItemRepository : IItemRepository
 
         return item;
     }
+
+    public async Task<Item?> GetItemByIdAsync(Guid id) =>
+    await _db.Items.FindAsync(id);
 }

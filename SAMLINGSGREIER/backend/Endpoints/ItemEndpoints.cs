@@ -13,6 +13,14 @@ public static class ItemEndpoints
         })
         .WithName("GetItems");
 
+        app.MapGet("/items/{id:guid}", async (Guid id, IItemRepository repository) =>
+        {
+            var item = await repository.GetItemByIdAsync(id);
+            return item is null ? Results.NotFound() : Results.Ok(item);
+        })
+        .WithName("GetItemById");
+
+
         app.MapPost("items", async (AddItemRequest request, IItemRepository repository) =>
         {
             var errors = new Dictionary<string, string[]>();
