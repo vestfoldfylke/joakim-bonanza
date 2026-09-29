@@ -14,7 +14,6 @@ var connectionString = builder.Configuration.GetConnectionString("Samling")
 builder.Services.AddDbContext<CollectionDbContext>(options =>
     options.UseSqlite(connectionString));
 
-
 var allowedOrigins = builder.Configuration
     .GetSection("Cors:AllowedOrigins")
     .Get<string[]>() ?? [];

@@ -31,5 +31,5 @@ public class SqliteItemRepository : IItemRepository
     }
 
     public async Task<Item?> GetItemByIdAsync(Guid id) =>
-    await _db.Items.FindAsync(id);
+        await _db.Items.FindAsync(id);
 }
