@@ -37,8 +37,12 @@ Opprett enda en fil i backend root som heter 'appsettings.json' og legg inn føl
 
 # How to run
 
-To initiate tools, type `dotnet tool restore`
+Fra `SAMLINGSGREIER/backend`:
 
-To get the database, type `dotnet ef database update` in a terminal from the /backend folder (cd SAMLINGSGREIER/backend)
+1. Installer dotnet-verktøyene som prosjektet bruker (f.eks. `dotnet-ef`) med `dotnet tool restore`
 
-in the same terminal, type `dotnet run` to run the backend from the /backend folder.
+2. Hent NuGet pakker med `dotnet restore`
+
+3. Bygg databasen ved å kjøre migrations med `dotnet ef database update`
+
+4. Start serveren / backend med `dotnet run`
