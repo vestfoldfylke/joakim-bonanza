@@ -82,13 +82,17 @@ export async function getCurrentPlaying(includeNews: boolean = false): Promise<D
     const program = await fetchNrkData();
     if (!program || program.length === 0) return undefined;
 
-    let currentPlaying = program.find(entry => entry.relativeTimeType === 'Present' && entry.type === 'Music');
+    const detailedProgram = program.map((element) => addDurationDetails(element));
+
+    const now = Date.now();
+
+    let currentPlaying = detailedProgram.find(entry => now >= entry.startTime.getTime() && now < entry.songEndTime.getTime() && entry.relativeTimeType === 'Present' && entry.type === 'Music');
 
     if (!currentPlaying && includeNews) {
-        currentPlaying = program.find(entry => entry.relativeTimeType === 'Present' && (entry.type === 'News' || entry.type === 'Music'));
+        currentPlaying = detailedProgram.find(entry => entry.relativeTimeType === 'Present' && (entry.type === 'News' || entry.type === 'Music'));
     }
 
     if (!currentPlaying) return undefined;
 
-    return addDurationDetails(currentPlaying);
+    return currentPlaying;
 }
