@@ -42,12 +42,8 @@
 		})
 	}
 
-	function sleep(ms: number) {
-		return new Promise(resolve => setTimeout(resolve, ms));
-	}
-
 	async function addToCollection() {
-		isAdding = true;
+		isAdding = true
 		try {
 			const response = await fetch(`${PUBLIC_API_URL.replace(/\/$/, "")}/items`, {
 				method: "POST",
@@ -64,7 +60,6 @@
 				throw new Error("Uventet format på svar fra API-et")
 			}
 
-			await sleep(1000);
 			items.push(created)
 			newItemName = ""
 			newItemCategory = ""
@@ -73,7 +68,7 @@
 		} catch (e) {
 			addError = e instanceof Error ? e.message : "Ukjent feil"
 		} finally {
-			isAdding = false;
+			isAdding = false
 		}
 	}
 </script>
