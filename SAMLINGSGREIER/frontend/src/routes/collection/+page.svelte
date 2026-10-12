@@ -17,7 +17,7 @@
 		try {
 			const response = await fetch(`${PUBLIC_API_URL.replace(/\/$/, "")}/items`)
 			if (!response.ok) {
-				throw new Error(`HTTP ${response.status}`)
+				throw new Error(`(GET) Fetch error while getting items: ${response.status}`)
 			}
 
 			const data: unknown = await response.json()
@@ -49,7 +49,7 @@
 			})
 
 			if (!response.ok) {
-				throw new Error(`HTTP ${response.status}`)
+				throw new Error(`(POST) Fetch error while adding items: ${response.status}`)
 			}
 
 			const created: unknown = await response.json()
@@ -122,43 +122,35 @@
 
 			<ds-field class="ds-field">
 				<label class="ds-label">
-				Velg en kategori
-				<select class="ds-input" bind:value={newItemCategory}>
-					<option value="" disabled selected>Velg en kategori…</option>
-					<option value="Konsoller">Konsoller</option>
-
-				</select>
+					Velg en kategori
+					<select class="ds-input" bind:value={newItemCategory}>
+						<option value="" disabled selected>Velg en kategori…</option>
+						<option value="Konsoller">Konsoller</option>
+					</select>
 				</label>
 			</ds-field>
 
 			<div class="ds-dialog__block">
-			<div
-			style="display:flex;gap:var(--ds-size-4);margin-top:var(--ds-size-4)"
-			>
-				<button
-					class="ds-button"
-					commandfor="add-item-dialog"
-					data-variant="primary"
-					type="button"
-					data-color="success"
-					onclick={() => addToCollection()}
-					disabled={!newItemName || !newItemCategory}
-				>Legg til</button>
-				<button
-					class="ds-button"
-					commandfor="add-item-dialog"
-					data-variant="secondary"
-					type="button"
-					command="close"
-				>Avbryt</button>
+				<div class="items-manager-dialog-action-buttons">
+					<button
+						class="ds-button"
+						commandfor="add-item-dialog"
+						data-variant="primary"
+						type="button"
+						data-color="success"
+						onclick={() => addToCollection()}
+						disabled={!newItemName || !newItemCategory}
+					>Legg til</button>
+					<button
+						class="ds-button"
+						commandfor="add-item-dialog"
+						data-variant="secondary"
+						type="button"
+						command="close"
+					>Avbryt</button>
+				</div>
 			</div>
-		</div>
 		</dialog>
-
-		<button class="ds-button" type="button" data-variant="secondary">
-			<span class="material-symbols-outlined">sort</span>
-			Sorter
-		</button>
 	</div>
 
 	<ul class="items-grid">
@@ -171,9 +163,6 @@
 							<span class="ds-tag" data-color="accent" data-size="sm">
 								{item.category}
 							</span>
-							<button class="ds-button" type="button" data-variant="tertiary" data-color="danger" data-size="sm">
-								<span class="material-symbols-outlined">delete</span>
-							</button>
 						</div>
 						<p class="ds-paragraph" data-size="sm">
 							Lagt til {formatDate(item.addedAt)}
@@ -186,9 +175,14 @@
 {/if}
 
 <style>
+.items-manager-dialog-action-buttons {
+	display: flex;
+	gap: var(--ds-size-4);
+	margin-top: var(--ds-size-4);
+}
 
 .ds-dialog .ds-field {
-    max-width: 20rem;
+	max-width: 20rem;
 	padding: .5rem 1.5rem;
 }
 
