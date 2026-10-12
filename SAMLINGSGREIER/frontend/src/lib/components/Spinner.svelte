@@ -1,15 +1,11 @@
 <script lang="ts">
 	interface Props {
-    hasLabel?: boolean
+		hasLabel?: boolean
 		label?: string
 		size?: "sm" | "md" | "lg"
 	}
 
-  let {
-    hasLabel = false,
-    label = "Laster inn..",
-    size = "sm"
-  }: Props = $props()
+	let { hasLabel = false, label = "Laster inn..", size = "sm" }: Props = $props()
 </script>
 
 <div class="spinner-wrapper">

@@ -14,7 +14,7 @@
 </svelte:head>
 
 <div class="app-layout">
-	<nav class=sidebar>
+	<nav class="sidebar">
 		<ul>
 			<li>
 				<a href="/">
