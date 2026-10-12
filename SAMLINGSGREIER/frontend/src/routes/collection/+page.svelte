@@ -11,6 +11,7 @@
 
 	let newItemName = $state("")
 	let newItemCategory = $state("")
+	let dialogEl: HTMLDialogElement
 
 	onMount(async () => {
 		try {
@@ -60,8 +61,7 @@
 			newItemName = ""
 			newItemCategory = ""
 
-			const dialog = document.getElementById("add-item-dialog") as HTMLDialogElement
-			dialog?.close()
+			dialogEl.close()
 		} catch(e) {
 			error = e instanceof Error ? e.message : "Ukjent feil"
 		}
@@ -92,6 +92,7 @@
 		</button>
 
 		<dialog
+			bind:this={dialogEl}
 			class="ds-dialog"
 			data-placement="center"
 			data-modal="true"
