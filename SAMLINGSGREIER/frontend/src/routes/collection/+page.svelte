@@ -85,7 +85,7 @@
 		<p class="ds-paragraph">Klarte ikke hente gjenstander: {loadError}</p>
 	</div>
 {:else if items.length === 0}
-	<p>Det finnes ingen elementer enda.</p>
+	<p>Det finnes ingen gjenstander enda.</p>
 {:else}
 	<div class="items-manager">
 		<button
