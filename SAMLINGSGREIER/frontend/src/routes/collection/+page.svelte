@@ -11,7 +11,7 @@
 
 	let newItemName = $state("")
 	let newItemCategory = $state("")
-	let dialogEl = $state(HTMLDialogElement)
+	let dialogEl: HTMLDialogElement
 
 	onMount(async () => {
 		try {
@@ -62,7 +62,7 @@
 			newItemCategory = ""
 
 			dialogEl.close()
-		} catch (e) {
+		} catch(e) {
 			error = e instanceof Error ? e.message : "Ukjent feil"
 		}
 	}
