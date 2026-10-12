@@ -11,7 +11,7 @@
 
 	let newItemName = $state("")
 	let newItemCategory = $state("")
-	let dialogEl: HTMLDialogElement
+	let dialogEl = $state(HTMLDialogElement)
 
 	onMount(async () => {
 		try {
