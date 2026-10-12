@@ -91,6 +91,7 @@
 			type="button"
 			command="show-modal"
 			commandfor="add-item-dialog"
+			onclick={() => {addError = ""}}
 		>
 			<span class="material-symbols-outlined">add_card</span>
 			Legg til ny
