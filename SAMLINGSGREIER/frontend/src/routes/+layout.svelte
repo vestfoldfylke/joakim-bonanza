@@ -22,7 +22,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="#">
+				<a href="/collection">
 					Samlingen min
 				</a>
 			</li>
