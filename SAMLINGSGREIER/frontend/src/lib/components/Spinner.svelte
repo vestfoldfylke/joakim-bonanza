@@ -1,16 +1,15 @@
 <script lang="ts">
 	interface Props {
-		hasLabel?: boolean
 		label?: string
 		size?: "sm" | "md" | "lg"
 	}
 
-	let { hasLabel = false, label = "Laster inn..", size = "sm" }: Props = $props()
+	let { label, size = "sm" }: Props = $props()
 </script>
 
 <div class="spinner-wrapper">
   <svg
-    aria-label={label}
+    aria-label="Laster inn"
     class="ds-spinner"
     role="img"
     viewBox="0 0 50 50"
@@ -34,7 +33,7 @@
         stroke-width="5"
     ></circle>
   </svg>
-  {#if hasLabel}
+  {#if label}
     <p class="ds-paragraph">{label}</p>
   {/if}
 </div>

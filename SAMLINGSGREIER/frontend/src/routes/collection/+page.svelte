@@ -71,7 +71,7 @@
 <h1>Samlingen min</h1>
 
 {#if isLoading}
-	<Spinner hasLabel={true}/>
+	<Spinner label="Laster inn..."/>
 {:else if error}
 	<div class="ds-alert" data-color="danger" role="alert">
 		<h2 class="ds-heading" data-size="xs" style="margin-bottom:var(--ds-size-2)">En feil har oppstått</h2>
