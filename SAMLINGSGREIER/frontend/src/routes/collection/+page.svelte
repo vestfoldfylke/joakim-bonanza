@@ -6,8 +6,10 @@
 	import { type Item, isItem } from "$lib/item"
 
 	let items = $state<Item[]>([])
-	let error = $state<string | null>(null)
+	let loadError = $state<string | null>(null)
+	let addError = $state<string | null>(null)
 	let isLoading = $state(true)
+	let isAdding = $state(false)
 
 	let newItemName = $state("")
 	let newItemCategory = $state("")
@@ -26,7 +28,7 @@
 			}
 			items = data
 		} catch (e) {
-			error = e instanceof Error ? e.message : "Ukjent feil"
+			loadError = e instanceof Error ? e.message : "Ukjent feil"
 		} finally {
 			isLoading = false
 		}
@@ -40,7 +42,12 @@
 		})
 	}
 
+	function sleep(ms: number) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
 	async function addToCollection() {
+		isAdding = true;
 		try {
 			const response = await fetch(`${PUBLIC_API_URL.replace(/\/$/, "")}/items`, {
 				method: "POST",
@@ -57,13 +64,16 @@
 				throw new Error("Uventet format på svar fra API-et")
 			}
 
+			await sleep(1000);
 			items.push(created)
 			newItemName = ""
 			newItemCategory = ""
 
 			dialogEl?.close()
 		} catch (e) {
-			error = e instanceof Error ? e.message : "Ukjent feil"
+			addError = e instanceof Error ? e.message : "Ukjent feil"
+		} finally {
+			isAdding = false;
 		}
 	}
 </script>
@@ -72,10 +82,10 @@
 
 {#if isLoading}
 	<Spinner label="Laster inn..."/>
-{:else if error}
+{:else if loadError}
 	<div class="ds-alert" data-color="danger" role="alert">
 		<h2 class="ds-heading" data-size="xs" style="margin-bottom:var(--ds-size-2)">En feil har oppstått</h2>
-		<p class="ds-paragraph">Klarte ikke hente gjenstander: {error}</p>
+		<p class="ds-paragraph">Klarte ikke hente gjenstander: {loadError}</p>
 	</div>
 {:else if items.length === 0}
 	<p>Det finnes ingen elementer enda.</p>
@@ -132,15 +142,19 @@
 
 			<div class="ds-dialog__block">
 				<div class="items-manager-dialog-action-buttons">
-					<button
-						class="ds-button"
-						commandfor="add-item-dialog"
-						data-variant="primary"
-						type="button"
-						data-color="success"
-						onclick={() => addToCollection()}
-						disabled={!newItemName || !newItemCategory}
-					>Legg til</button>
+					{#if isAdding}
+						<Spinner />
+					{:else}
+						<button
+							class="ds-button"
+							commandfor="add-item-dialog"
+							data-variant="primary"
+							type="button"
+							data-color="success"
+							onclick={addToCollection}
+							disabled={!newItemName || !newItemCategory}
+						>Legg til</button>
+					{/if}
 					<button
 						class="ds-button"
 						commandfor="add-item-dialog"
@@ -149,6 +163,14 @@
 						command="close"
 					>Avbryt</button>
 				</div>
+				<br>
+				{#if addError}
+					<p
+						class="ds-validation-message"
+						data-field="validation"
+						data-color="danger"
+					>En feil oppstod! ({addError})</p>
+				{/if}
 			</div>
 		</dialog>
 	</div>
