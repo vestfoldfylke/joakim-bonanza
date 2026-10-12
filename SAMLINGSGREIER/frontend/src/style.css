@@ -1,5 +1,6 @@
 :root {
 	overscroll-behavior: none;
+	--font-family: sans-serif;
 	--header-height: 4rem;
 
 	--max-page-width: 120rem;
