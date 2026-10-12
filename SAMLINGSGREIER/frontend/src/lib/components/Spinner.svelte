@@ -33,6 +33,7 @@
         stroke-width="5"
     ></circle>
   </svg>
+  
   {#if label}
     <p class="ds-paragraph">{label}</p>
   {/if}

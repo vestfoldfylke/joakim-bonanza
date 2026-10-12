@@ -5,6 +5,8 @@
 	import Spinner from "$lib/components/Spinner.svelte"
 	import { type Item, isItem } from "$lib/item"
 
+	let CLEAN_API_URL = PUBLIC_API_URL.replace(/\/$/, "")
+
 	let items = $state<Item[]>([])
 	let loadError = $state<string | null>(null)
 	let addError = $state<string | null>(null)
@@ -17,7 +19,7 @@
 
 	onMount(async () => {
 		try {
-			const response = await fetch(`${PUBLIC_API_URL.replace(/\/$/, "")}/items`)
+			const response = await fetch(`${CLEAN_API_URL}/items`)
 			if (!response.ok) {
 				throw new Error(`(GET) Fetch error while getting items: ${response.status}`)
 			}
@@ -45,7 +47,7 @@
 	async function addToCollection() {
 		isAdding = true
 		try {
-			const response = await fetch(`${PUBLIC_API_URL.replace(/\/$/, "")}/items`, {
+			const response = await fetch(`${CLEAN_API_URL}/items`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ name: newItemName, category: newItemCategory })
@@ -79,7 +81,7 @@
 	<Spinner label="Laster inn..."/>
 {:else if loadError}
 	<div class="ds-alert" data-color="danger" role="alert">
-		<h2 class="ds-heading" data-size="xs" style="margin-bottom:var(--ds-size-2)">En feil har oppstått</h2>
+		<h2 class="ds-heading" data-size="xs">En feil har oppstått</h2>
 		<p class="ds-paragraph">Klarte ikke hente gjenstander: {loadError}</p>
 	</div>
 {:else if items.length === 0}
@@ -202,15 +204,6 @@
 .ds-dialog .ds-field {
 	max-width: 20rem;
 	padding: .5rem 1.5rem;
-}
-
-.items-manager {
-	list-style: none;
-	padding: 0;
-	margin: var(--ds-size-6) 0 0;
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
-	gap: var(--ds-size-1);
 }
 
 .items-grid {
