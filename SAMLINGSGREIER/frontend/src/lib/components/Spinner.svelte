@@ -1,9 +1,15 @@
 <script lang="ts">
 	interface Props {
+    hasLabel?: boolean
 		label?: string
 		size?: "sm" | "md" | "lg"
 	}
-	let { label = "Laster inn..", size = "sm" }: Props = $props()
+
+  let {
+    hasLabel = false,
+    label = "Laster inn..",
+    size = "sm"
+  }: Props = $props()
 </script>
 
 <div class="spinner-wrapper">
@@ -32,7 +38,9 @@
         stroke-width="5"
     ></circle>
   </svg>
-  <p class="ds-paragraph">{label}</p>
+  {#if hasLabel}
+    <p class="ds-paragraph">{label}</p>
+  {/if}
 </div>
 
 <style>

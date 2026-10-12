@@ -40,7 +40,7 @@
 <h1>Samlingen min</h1>
 
 {#if isLoading}
-	<Spinner />
+	<Spinner hasLabel={true}/>
 {:else if error}
 	<p>Klarte ikke hente gjenstander: {error}</p>
 {:else if items.length === 0}
