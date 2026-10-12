@@ -3,7 +3,7 @@
 	import { PUBLIC_API_URL } from "$env/static/public"
 	// components
 	import Spinner from "$lib/components/Spinner.svelte"
-	import { type Item, isItem } from "$lib/types"
+	import { type Item, isItem } from "$lib/item"
 
 	let items = $state<Item[]>([])
 	let error = $state<string | null>(null)
