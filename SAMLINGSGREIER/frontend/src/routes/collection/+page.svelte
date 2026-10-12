@@ -62,7 +62,7 @@
 			newItemCategory = ""
 
 			dialogEl?.close()
-		} catch(e) {
+		} catch (e) {
 			error = e instanceof Error ? e.message : "Ukjent feil"
 		}
 	}
