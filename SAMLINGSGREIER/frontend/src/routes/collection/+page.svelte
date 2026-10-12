@@ -42,7 +42,10 @@
 {#if isLoading}
 	<Spinner hasLabel={true}/>
 {:else if error}
-	<p>Klarte ikke hente gjenstander: {error}</p>
+	<div class="ds-alert" data-color="danger" role="alert">
+		<h2 class="ds-heading" data-size="xs" style="margin-bottom:var(--ds-size-2)">En feil har oppstått</h2>
+		<p class="ds-paragraph">Klarte ikke hente gjenstander: {error}</p>
+	</div>
 {:else if items.length === 0}
 	<p>Det finnes ingen elementer enda.</p>
 {:else}
