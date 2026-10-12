@@ -149,7 +149,7 @@
 					data-variant="secondary"
 					type="button"
 					command="close"
-				>Cancel</button>
+				>Avbryt</button>
 			</div>
 		</div>
 		</dialog>
