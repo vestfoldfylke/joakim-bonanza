@@ -84,8 +84,6 @@
 		<h2 class="ds-heading" data-size="xs">En feil har oppstått</h2>
 		<p class="ds-paragraph">Klarte ikke hente gjenstander: {loadError}</p>
 	</div>
-{:else if items.length === 0}
-	<p>Det finnes ingen gjenstander enda.</p>
 {:else}
 	<div class="items-manager">
 		<button
@@ -173,25 +171,29 @@
 		</dialog>
 	</div>
 
-	<ul class="items-grid">
-		{#each items as item (item.id)}
-			<li>
-				<div class="ds-card" data-color="neutral">
-					<div class="item-card">
-						<div class="item-card-header">
-							<h2 class="ds-heading" data-size="xs">{item.name}</h2>
-							<span class="ds-tag" data-color="accent" data-size="sm">
-								{item.category}
-							</span>
+	{#if !(items.length === 0)}
+		<ul class="items-grid">
+			{#each items as item (item.id)}
+				<li>
+					<div class="ds-card" data-color="neutral">
+						<div class="item-card">
+							<div class="item-card-header">
+								<h2 class="ds-heading" data-size="xs">{item.name}</h2>
+								<span class="ds-tag" data-color="accent" data-size="sm">
+									{item.category}
+								</span>
+							</div>
+							<p class="ds-paragraph" data-size="sm">
+								Lagt til {formatDate(item.addedAt)}
+							</p>
 						</div>
-						<p class="ds-paragraph" data-size="sm">
-							Lagt til {formatDate(item.addedAt)}
-						</p>
 					</div>
-				</div>
-			</li>
-		{/each}
-	</ul>
+				</li>
+			{/each}
+		</ul>
+	{:else}
+		<p>Det finnes ingen gjenstander enda.</p>
+	{/if}
 {/if}
 
 <style>
