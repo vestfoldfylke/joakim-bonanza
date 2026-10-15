@@ -15,7 +15,6 @@
 	let isAdding = $state(false)
 	let removeError = $state<string | null>(null)
 
-	let selectedItem = $state<Item>()
 	let newItemName = $state("")
 	let newItemCategory = $state("")
 	let dialogEl = $state<HTMLDialogElement | undefined>()
@@ -100,7 +99,7 @@
 
 <h1>Samlingen min</h1>
 
-{#if isLoading}
+{#if isLoading || isRemoving}
 	<Spinner label="Laster inn..."/>
 {:else if loadError}
 	<div class="ds-alert" data-color="danger" role="alert">
