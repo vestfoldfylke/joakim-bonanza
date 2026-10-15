@@ -49,27 +49,6 @@
 		})
 	}
 
-	async function getItemFromId(Id: string) {
-		try {
-			const response = await fetch(`${CLEAN_API_URL}/items/${Id}`)
-			if (!response.ok) {
-				throw new Error(`(GET) Fetch error while getting items: ${response.status}`)
-			}
-
-			const data: unknown = await response.json()
-
-			if (isItem(data)) {
-				return data
-			}
-
-			return "Ikke en gyldig gjenstand (Not of type Item)"
-		} catch (e) {
-			getItemError = e instanceof Error ? e.message : "Ukjent feil"
-		} finally {
-			getItemLoading = false
-		}
-	}
-
 	async function addToCollection() {
 		isAdding = true
 		try {
@@ -110,7 +89,6 @@
 			if (!response.ok) {
 				throw new Error(`(POST) Fetch error while removing items: ${response.status}`)
 			}
-
 			items = items.filter((item) => item.id !== Id)
 
 			dialogEl?.close()
@@ -217,6 +195,25 @@
 			</div>
 		</dialog>
 	</div>
+	{#if removeError}
+		<br/>
+		<div class="ds-alert remove-error-alert" data-color="danger" role="alert">
+			<button
+				class="ds-button remove-error-alert__close"
+				type="button"
+				data-variant="tertiary"
+				data-color="neutral"
+				data-icon="true"
+				data-size="sm"
+				aria-label="Lukk varsel"
+				onclick={() => (removeError = null)}
+			>
+				<span class="material-symbols-outlined" aria-hidden="true">close</span>
+			</button>
+			<h2 class="ds-heading" data-size="xs">En feil har oppstått!</h2>
+			<p class="ds-paragraph">Klarte ikke å fjerne gjenstander: {removeError}</p>
+		</div>
+	{/if}
 
 	{#if !(items.length === 0)}
 		<ul class="items-grid">
@@ -271,6 +268,16 @@
 {/if}
 
 <style>
+.remove-error-alert {
+	position: relative;
+}
+
+.remove-error-alert__close {
+	position: absolute;
+	top: var(--ds-size-2);
+	right: var(--ds-size-2);
+}
+
 .items-manager-dialog-action-buttons {
 	display: flex;
 	gap: var(--ds-size-4);
