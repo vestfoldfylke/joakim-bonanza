@@ -216,7 +216,6 @@
 		<ul class="items-grid">
 			{#each items as item (item.id)}
 				<li>
-				
 					<div class="ds-card" data-color="neutral">
 						<div class="item-card">
 							<div class="item-card-header">
