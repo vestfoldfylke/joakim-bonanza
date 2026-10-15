@@ -13,8 +13,6 @@
 	let isLoading = $state(true)
 	let isRemoving = $state(false)
 	let isAdding = $state(false)
-	let getItemLoading = $state(false)
-	let getItemError = $state<string | null>(null)
 	let removeError = $state<string | null>(null)
 
 	let selectedItem = $state<Item>()
@@ -80,6 +78,7 @@
 	}
 
 	async function removeFromCollection(Id: string) {
+		removeError = null
 		isRemoving = true
 		try {
 			const response = await fetch(`${CLEAN_API_URL}/items/${Id}`, {
@@ -87,11 +86,10 @@
 			})
 
 			if (!response.ok) {
-				throw new Error(`(POST) Fetch error while removing items: ${response.status}`)
+				throw new Error(`(DELETE) Fetch error while removing items: ${response.status}`)
 			}
-			items = items.filter((item) => item.id !== Id)
 
-			dialogEl?.close()
+			items = items.filter((item) => item.id !== Id)
 		} catch (e) {
 			removeError = e instanceof Error ? e.message : "Ukjent feil"
 		} finally {
@@ -116,7 +114,7 @@
 			type="button"
 			command="show-modal"
 			commandfor="add-item-dialog"
-			onclick={() => {addError = ""}}
+			onclick={() => {addError = null}}
 		>
 			<span class="material-symbols-outlined">add_card</span>
 			Legg til ny
