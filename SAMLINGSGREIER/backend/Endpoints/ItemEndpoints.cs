@@ -44,7 +44,7 @@ public static class ItemEndpoints
             var deleted = await repository.RemoveItemAsync(id);
             return deleted ? Results.NoContent() : Results.NotFound();
         })
-        .WithName("Removeitem");
+        .WithName("RemoveItem");
 
     }
 }
