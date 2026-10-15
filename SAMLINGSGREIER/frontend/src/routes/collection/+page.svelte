@@ -11,8 +11,13 @@
 	let loadError = $state<string | null>(null)
 	let addError = $state<string | null>(null)
 	let isLoading = $state(true)
+	let isRemoving = $state(false)
 	let isAdding = $state(false)
+	let getItemLoading = $state(false)
+	let getItemError = $state<string | null>(null)
+	let removeError = $state<string | null>(null)
 
+	let selectedItem = $state<Item>()
 	let newItemName = $state("")
 	let newItemCategory = $state("")
 	let dialogEl = $state<HTMLDialogElement | undefined>()
@@ -44,6 +49,27 @@
 		})
 	}
 
+	async function getItemFromId(Id: string) {
+		try {
+			const response = await fetch(`${CLEAN_API_URL}/items/${Id}`)
+			if (!response.ok) {
+				throw new Error(`(GET) Fetch error while getting items: ${response.status}`)
+			}
+
+			const data: unknown = await response.json()
+
+			if (isItem(data)) {
+				return data
+			}
+
+			return "Ikke en gyldig gjenstand (Not of type Item)"
+		} catch (e) {
+			getItemError = e instanceof Error ? e.message : "Ukjent feil"
+		} finally {
+			getItemLoading = false
+		}
+	}
+
 	async function addToCollection() {
 		isAdding = true
 		try {
@@ -71,6 +97,27 @@
 			addError = e instanceof Error ? e.message : "Ukjent feil"
 		} finally {
 			isAdding = false
+		}
+	}
+
+	async function removeFromCollection(Id: string) {
+		isRemoving = true
+		try {
+			const response = await fetch(`${CLEAN_API_URL}/items/${Id}`, {
+				method: "DELETE"
+			})
+
+			if (!response.ok) {
+				throw new Error(`(POST) Fetch error while removing items: ${response.status}`)
+			}
+
+			items = items.filter((item) => item.id !== Id)
+
+			dialogEl?.close()
+		} catch (e) {
+			removeError = e instanceof Error ? e.message : "Ukjent feil"
+		} finally {
+			isRemoving = false
 		}
 	}
 </script>
@@ -175,17 +222,44 @@
 		<ul class="items-grid">
 			{#each items as item (item.id)}
 				<li>
+				
 					<div class="ds-card" data-color="neutral">
 						<div class="item-card">
 							<div class="item-card-header">
 								<h2 class="ds-heading" data-size="xs">{item.name}</h2>
 								<span class="ds-tag" data-color="accent" data-size="sm">
 									{item.category}
-								</span>
+								</span>	
+								<button
+									type="button"
+									class="ds-button"
+									data-variant="tertiary"
+									data-size="sm"
+									data-icon
+									popovertarget={`menu-${item.id}`}
+								>
+									<span class="material-symbols-outlined" aria-hidden="true">more_vert</span>
+								</button>
+								<div class="ds-dropdown" data-placement="bottom-right" id={`menu-${item.id}`} popover>
+									<ul>
+										<li>
+											<button
+												type="button"
+												data-size="sm"
+												class="ds-button"
+												data-variant="tertiary"
+												onclick={() => removeFromCollection(item.id)}>
+												<span class="material-symbols-outlined" aria-hidden="true">delete</span>
+												Slett
+											</button>
+										</li>
+									</ul>
+								</div>
 							</div>
+
 							<p class="ds-paragraph" data-size="sm">
 								Lagt til {formatDate(item.addedAt)}
-							</p>
+							</p>	
 						</div>
 					</div>
 				</li>
@@ -238,8 +312,8 @@
 .item-card {
 	display: flex;
 	flex-direction: column;
-	gap: var(--ds-size-3);
-	padding: var(--ds-size-4);
+	gap: var(--ds-size-2);
+	padding: var(--ds-size-1);
 }
 
 .item-card-header {

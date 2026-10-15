@@ -38,5 +38,13 @@ public static class ItemEndpoints
             return Results.CreatedAtRoute("GetItemById", new { id = item.Id }, item);
         })
         .WithName("AddItem");
+
+        app.MapDelete("/items/{id:guid}", async (Guid id, IItemRepository repository) =>
+        {
+            var deleted = await repository.RemoveItemAsync(id);
+            return deleted ? Results.NoContent() : Results.NotFound();
+        })
+        .WithName("Removeitem");
+
     }
 }

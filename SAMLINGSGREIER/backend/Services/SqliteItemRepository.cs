@@ -30,6 +30,16 @@ public class SqliteItemRepository : IItemRepository
         return item;
     }
 
+    public async Task<bool> RemoveItemAsync(Guid id)
+    {
+        var item = await _db.Items.FindAsync(id);
+        if (item is null) return false;
+
+        _db.Items.Remove(item);
+        await _db.SaveChangesAsync();
+        return true;
+    }
+
     public async Task<Item?> GetItemByIdAsync(Guid id) =>
         await _db.Items.FindAsync(id);
 }
