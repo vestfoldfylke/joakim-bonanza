@@ -24,5 +24,9 @@
 		"typescript": "^6.0.3",
 		"vite": "^8.0.16",
 		"vitest": "^5.0.1"
+	},
+	"dependencies": {
+		"@digdir/designsystemet-css": "^1.23.0",
+		"@digdir/designsystemet-web": "^1.23.0"
 	}
 }

@@ -1,0 +1,33 @@
+:root {
+	overscroll-behavior: none;
+	--font-family: sans-serif;
+	--header-height: 4rem;
+
+	--max-page-width: 120rem;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	min-height: 100%;
+	font-family: var(--font-family);
+	font-optical-sizing: auto;
+	font-weight: 300;
+	font-style: normal;
+	font-variation-settings:
+		"wdth" 100,
+		"YTLC" 500;
+}
+
+main {
+	flex: 1;
+	max-width: var(--max-page-width);
+	margin: 0 auto;
+	padding: var(--ds-size-6);
+}
+
+.app-layout {
+	display: flex;
+	min-height: 100vh;
+}
