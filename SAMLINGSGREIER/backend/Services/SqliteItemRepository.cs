@@ -20,7 +20,7 @@ public class SqliteItemRepository : IItemRepository
         var item = new Item(
             Guid.NewGuid(),
             request.Name,
-            request.Category,
+            request.CategoryId,
             DateTime.UtcNow
         );
 

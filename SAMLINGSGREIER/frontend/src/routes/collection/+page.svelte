@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte"
 	import { PUBLIC_API_URL } from "$env/static/public"
+	import { type Category, isCategory } from "$lib/category"
 	// components
 	import Spinner from "$lib/components/Spinner.svelte"
 	import { type Item, isItem } from "$lib/item"
@@ -8,6 +9,7 @@
 	let CLEAN_API_URL = PUBLIC_API_URL.replace(/\/$/, "")
 
 	let items = $state<Item[]>([])
+	let categories = $state<Category[]>([])
 	let loadError = $state<string | null>(null)
 	let addError = $state<string | null>(null)
 	let isLoading = $state(true)
@@ -21,22 +23,31 @@
 
 	onMount(async () => {
 		try {
-			const response = await fetch(`${CLEAN_API_URL}/items`)
-			if (!response.ok) {
-				throw new Error(`(GET) Fetch error while getting items: ${response.status}`)
+			const [itemsRes, categoriesRes] = await Promise.all([fetch(`${CLEAN_API_URL}/items`), fetch(`${CLEAN_API_URL}/categories`)])
+			if (!itemsRes.ok) {
+				throw new Error(`(GET) Fetch error while getting items: ${itemsRes.status}`)
+			}
+			if (!categoriesRes.ok) {
+				throw new Error(`(GET) Fetch error while getting categories: ${categoriesRes.status}`)
 			}
 
-			const data: unknown = await response.json()
-			if (!Array.isArray(data) || !data.every(isItem)) {
+			const itemData: unknown = await itemsRes.json()
+			const categoryData: unknown = await categoriesRes.json()
+			if (!Array.isArray(itemData) || !itemData.every(isItem) || !Array.isArray(categoryData) || !categoryData.every(isCategory)) {
 				throw new Error("Uventet format på svar fra API-et")
 			}
-			items = data
+			items = itemData
+			categories = categoryData
 		} catch (e) {
 			loadError = e instanceof Error ? e.message : "Ukjent feil"
 		} finally {
 			isLoading = false
 		}
 	})
+
+	function categoryName(id: string) {
+		return categories.find((c) => c.id === id)?.name ?? "Ukjent kategori"
+	}
 
 	function formatDate(iso: string) {
 		return new Date(iso).toLocaleDateString("nb-NO", {
@@ -52,7 +63,7 @@
 			const response = await fetch(`${CLEAN_API_URL}/items`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ name: newItemName, category: newItemCategory })
+				body: JSON.stringify({ name: newItemName, categoryId: newItemCategory })
 			})
 
 			if (!response.ok) {
@@ -153,7 +164,9 @@
 					Velg en kategori
 					<select class="ds-input" bind:value={newItemCategory}>
 						<option value="" disabled selected>Velg en kategori…</option>
-						<option value="Konsoller">Konsoller</option>
+						{#each categories as category (category.name)}
+							<option value={category.id}>{category.name}</option>
+						{/each}
 					</select>
 				</label>
 			</ds-field>
@@ -225,7 +238,7 @@
 							<div class="item-card-header">
 								<h2 class="ds-heading" data-size="xs" title={item.name}>{item.name}</h2>
 								<span class="ds-tag" data-color="accent" data-size="sm">
-									{item.category}
+									{categoryName(item.categoryId)}
 								</span>	
 								<button
 									type="button"
