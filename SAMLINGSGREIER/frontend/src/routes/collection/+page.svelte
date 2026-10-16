@@ -99,7 +99,7 @@
 
 <h1>Samlingen min</h1>
 
-{#if isLoading || isRemoving}
+{#if isLoading}
 	<Spinner label="Laster inn..."/>
 {:else if loadError}
 	<div class="ds-alert" data-color="danger" role="alert">
@@ -213,6 +213,10 @@
 	{/if}
 
 	{#if !(items.length === 0)}
+		{#if isRemoving}
+			<br/>
+			<Spinner label="Fjerner gjenstander..."/>
+		{:else}
 		<ul class="items-grid">
 			{#each items as item (item.id)}
 				<li>
@@ -258,8 +262,14 @@
 				</li>
 			{/each}
 		</ul>
+		{/if}
 	{:else}
-		<p>Det finnes ingen gjenstander enda.</p>
+		{#if !isRemoving}
+			<p>Her var det tomt..</p>
+		{:else}
+			<br/>
+			<Spinner label="Fjerner gjenstander..."/>
+		{/if}
 	{/if}
 {/if}
 
