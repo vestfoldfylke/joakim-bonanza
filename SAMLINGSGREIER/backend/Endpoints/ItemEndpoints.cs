@@ -27,7 +27,7 @@ public static class ItemEndpoints
             if (string.IsNullOrWhiteSpace(request.Name))
                 errors["name"] = ["Name cannot be empty"];
 
-            if (string.IsNullOrWhiteSpace(request.Category))
+            if (request.CategoryId == Guid.Empty)
                 errors["category"] = ["Category cannot be empty"];
 
             if (errors.Count > 0)
