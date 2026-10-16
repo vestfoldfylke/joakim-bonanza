@@ -235,6 +235,7 @@
 									data-icon
 									popovertarget={`menu-${item.id}`}
 									data-tooltip="Behandle"
+									aria-label="Behandle"
 								>
 									<span class="material-symbols-outlined" aria-hidden="true">more_vert</span>
 								</button>
