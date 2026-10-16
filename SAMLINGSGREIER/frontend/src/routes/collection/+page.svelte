@@ -223,7 +223,7 @@
 					<div class="ds-card" data-color="neutral">
 						<div class="item-card">
 							<div class="item-card-header">
-								<h2 class="ds-heading" data-size="xs">{item.name}</h2>
+								<h2 class="ds-heading" data-size="xs" title={item.name}>{item.name}</h2>
 								<span class="ds-tag" data-color="accent" data-size="sm">
 									{item.category}
 								</span>	
@@ -338,6 +338,23 @@
 
 .item-card-header h2 {
 	margin: 0;
+	flex: 1;
+	min-width: 0;
+	overflow-wrap: anywhere;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	overflow: hidden;
+}
+
+.item-card-header .ds-tag,
+.item-card-header .ds-button {
+	flex-shrink: 0;
+}
+
+.item-card-header .ds-tag {
+	white-space: nowrap;
 }
 
 .item-card p {
