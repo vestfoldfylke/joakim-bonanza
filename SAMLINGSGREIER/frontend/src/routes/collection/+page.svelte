@@ -164,7 +164,7 @@
 					Velg en kategori
 					<select class="ds-input" bind:value={newItemCategory}>
 						<option value="" disabled selected>Velg en kategori…</option>
-						{#each categories as category (category.name)}
+						{#each categories as category (category.id)}
 							<option value={category.id}>{category.name}</option>
 						{/each}
 					</select>

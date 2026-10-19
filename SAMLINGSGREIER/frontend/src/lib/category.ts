@@ -4,10 +4,10 @@ export type Category = {
 }
 
 export function isCategory(value: unknown): value is Category {
-	if (typeof value !== "object" || value === null) {
+	if (value === null || typeof value !== "object") {
 		return false
 	}
 
-	const candidate = value as Record<string, unknown>
+	const candidate = value as Category
 	return typeof candidate.id === "string" && typeof candidate.name === "string"
 }
