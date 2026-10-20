@@ -17,6 +17,33 @@ namespace backend.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.12");
 
+            modelBuilder.Entity("Backend.Models.Category", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                            Name = "Konsoller"
+                        },
+                        new
+                        {
+                            Id = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                            Name = "Musikk"
+                        });
+                });
+
             modelBuilder.Entity("Backend.Models.Item", b =>
                 {
                     b.Property<Guid>("Id")
@@ -26,8 +53,7 @@ namespace backend.Migrations
                     b.Property<DateTime>("AddedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
+                    b.Property<Guid>("CategoryId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -43,14 +69,14 @@ namespace backend.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
                             AddedAt = new DateTime(2026, 9, 28, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Category = "Konsoller",
+                            CategoryId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
                             Name = "Gameboy"
                         },
                         new
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
                             AddedAt = new DateTime(2026, 9, 28, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Category = "Musikk",
+                            CategoryId = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
                             Name = "Morgan Elgitar"
                         });
                 });

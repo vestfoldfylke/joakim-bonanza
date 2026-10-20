@@ -1,3 +1,3 @@
 namespace Backend.Models;
 
-public record Item(Guid Id, string Name, string Category, DateTime AddedAt);
+public record Item(Guid Id, string Name, Guid CategoryId, DateTime AddedAt);

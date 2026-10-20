@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IItemRepository, SqliteItemRepository>();
+builder.Services.AddScoped<ICategoryRepository, SqliteCategoryRepository>();
 
 var connectionString = builder.Configuration.GetConnectionString("Samling")
     ?? throw new InvalidOperationException(
@@ -42,5 +43,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("Frontend");
 app.MapItemEndpoints();
+app.MapCategoryEndpoints();
 
 app.Run();

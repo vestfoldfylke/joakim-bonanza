@@ -1,3 +1,3 @@
 namespace Backend.Models;
 
-public record AddItemRequest(string Name, string Category);
+public record AddItemRequest(string Name, Guid CategoryId);
