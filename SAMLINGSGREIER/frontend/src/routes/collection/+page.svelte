@@ -20,8 +20,8 @@
 	let newItemCategory = $state("")
 	let dialogEl = $state<HTMLDialogElement | undefined>()
 
-	let searchFilter = $state("");
-	
+	let searchFilter = $state("")
+
 	let items = $state<Item[]>([])
 
 	const sortOptions = [
@@ -30,7 +30,7 @@
 		{ value: "category", label: "Kategori" }
 	]
 	let sortBy = $state("date")
-	
+
 	const visibleItems = $derived(
 		items
 			.filter((item) => item.name.toLowerCase().includes(searchFilter.trim().toLowerCase()))
@@ -130,7 +130,6 @@
 			isRemoving = false
 		}
 	}
-
 </script>
 
 <h1>Samlingen min</h1>
@@ -285,59 +284,63 @@
 			<p class="ds-paragraph">Klarte ikke å fjerne gjenstander: {removeError}</p>
 		</div>
 	{/if}
-
+	
 	{#if !(items.length === 0)}
 		{#if isRemoving}
 			<br/>
 			<Spinner label="Fjerner gjenstander..."/>
 		{:else}
-		<ul class="items-grid">
-			{#each visibleItems as item (item.id)}
-				<li>
-					<div class="ds-card" data-color="neutral">
-						<div class="item-card">
-							<div class="item-card-header">
-								<h2 class="ds-heading" data-size="xs" title={item.name}>{item.name}</h2>
-								<span class="ds-tag" data-color="accent" data-size="sm">
-									{categoryName(item.categoryId)}
-								</span>	
-								<button
-									type="button"
-									class="ds-button"
-									data-variant="tertiary"
-									data-size="sm"
-									data-icon
-									popovertarget={`menu-${item.id}`}
-									data-tooltip="Behandle"
-									aria-label="Behandle"
-								>
-									<span class="material-symbols-outlined" aria-hidden="true">more_vert</span>
-								</button>
-								<div class="ds-dropdown" data-placement="bottom-end" id={`menu-${item.id}`} popover>
-									<ul>
-										<li>
-											<button
-												type="button"
-												data-size="sm"
-												class="ds-button"
-												data-variant="tertiary"
-												onclick={() => removeFromCollection(item.id)}>
-												<span class="material-symbols-outlined" aria-hidden="true">delete</span>
-												Slett
-											</button>
-										</li>
-									</ul>
-								</div>
-							</div>
+			{#if visibleItems.length === 0}
+				<p>Ingen treff på {searchFilter}</p>
+			{/if}
 
-							<p class="ds-paragraph" data-size="sm">
-								Lagt til {formatDate(item.addedAt)}
-							</p>	
+			<ul class="items-grid">
+				{#each visibleItems as item (item.id)}
+					<li>
+						<div class="ds-card" data-color="neutral">
+							<div class="item-card">
+								<div class="item-card-header">
+									<h2 class="ds-heading" data-size="xs" title={item.name}>{item.name}</h2>
+									<span class="ds-tag" data-color="accent" data-size="sm">
+										{categoryName(item.categoryId)}
+									</span>	
+									<button
+										type="button"
+										class="ds-button"
+										data-variant="tertiary"
+										data-size="sm"
+										data-icon
+										popovertarget={`menu-${item.id}`}
+										data-tooltip="Behandle"
+										aria-label="Behandle"
+									>
+										<span class="material-symbols-outlined" aria-hidden="true">more_vert</span>
+									</button>
+									<div class="ds-dropdown" data-placement="bottom-end" id={`menu-${item.id}`} popover>
+										<ul>
+											<li>
+												<button
+													type="button"
+													data-size="sm"
+													class="ds-button"
+													data-variant="tertiary"
+													onclick={() => removeFromCollection(item.id)}>
+													<span class="material-symbols-outlined" aria-hidden="true">delete</span>
+													Slett
+												</button>
+											</li>
+										</ul>
+									</div>
+								</div>
+
+								<p class="ds-paragraph" data-size="sm">
+									Lagt til {formatDate(item.addedAt)}
+								</p>	
+							</div>
 						</div>
-					</div>
-				</li>
-			{/each}
-		</ul>
+					</li>
+				{/each}
+			</ul>
 		{/if}
 	{:else}
 		{#if !isRemoving}
