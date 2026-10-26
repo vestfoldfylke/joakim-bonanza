@@ -8,7 +8,6 @@
 
 	let CLEAN_API_URL = PUBLIC_API_URL.replace(/\/$/, "")
 
-	let items = $state<Item[]>([])
 	let categories = $state<Category[]>([])
 	let loadError = $state<string | null>(null)
 	let addError = $state<string | null>(null)
@@ -20,6 +19,31 @@
 	let newItemName = $state("")
 	let newItemCategory = $state("")
 	let dialogEl = $state<HTMLDialogElement | undefined>()
+
+	let searchFilter = $state("")
+
+	let items = $state<Item[]>([])
+
+	const sortOptions = [
+		{ value: "date", label: "Dato lagt til" },
+		{ value: "name", label: "Navn" },
+		{ value: "category", label: "Kategori" }
+	]
+	let sortBy = $state("date")
+
+	const visibleItems = $derived(
+		items
+			.filter((item) => item.name.toLowerCase().includes(searchFilter.trim().toLowerCase()))
+			.toSorted((a, b) => {
+				if (sortBy === "name") {
+					return a.name.localeCompare(b.name, "nb")
+				}
+				if (sortBy === "category") {
+					return categoryName(a.categoryId).localeCompare(categoryName(b.categoryId), "nb")
+				}
+				return new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime()
+			})
+	)
 
 	onMount(async () => {
 		try {
@@ -119,6 +143,42 @@
 	</div>
 {:else}
 	<div class="items-manager">
+		<ds-suggestion class="ds-search search-field">
+			<input class="ds-input" type="search" aria-label="Søk" bind:value={searchFilter}/>
+		</ds-suggestion>
+
+		<button
+			class="ds-button"
+			type="button"
+			data-variant="secondary"
+			popovertarget="sort-menu"
+		>
+			<span class="material-symbols-outlined" aria-hidden="true">sort</span>
+			Sorter
+		</button>
+		<div class="ds-dropdown sort-menu" data-placement="bottom-end" id="sort-menu" popover>
+			<ul aria-label="Velg rekkefølge">
+				{#each sortOptions as option (option.value)}
+					<li>
+						<button
+							class="ds-button"
+							type="button"
+							data-variant="tertiary"
+							data-size="xs"
+							popovertarget="sort-menu"
+							popovertargetaction="hide"
+							onclick={() => (sortBy = option.value)}
+						>
+							<span class="material-symbols-outlined sort-menu-check" aria-hidden="true">
+								{sortBy === option.value ? "check" : ""}
+							</span>
+							{option.label}
+						</button>
+					</li>
+				{/each}
+			</ul>
+		</div>
+
 		<button
 			class="ds-button"
 			type="button"
@@ -127,7 +187,7 @@
 			onclick={() => {addError = null}}
 		>
 			<span class="material-symbols-outlined">add_card</span>
-			Legg til ny
+			Legg til
 		</button>
 
 		<dialog
@@ -224,59 +284,63 @@
 			<p class="ds-paragraph">Klarte ikke å fjerne gjenstander: {removeError}</p>
 		</div>
 	{/if}
-
+	
 	{#if !(items.length === 0)}
 		{#if isRemoving}
 			<br/>
 			<Spinner label="Fjerner gjenstander..."/>
 		{:else}
-		<ul class="items-grid">
-			{#each items as item (item.id)}
-				<li>
-					<div class="ds-card" data-color="neutral">
-						<div class="item-card">
-							<div class="item-card-header">
-								<h2 class="ds-heading" data-size="xs" title={item.name}>{item.name}</h2>
-								<span class="ds-tag" data-color="accent" data-size="sm">
-									{categoryName(item.categoryId)}
-								</span>	
-								<button
-									type="button"
-									class="ds-button"
-									data-variant="tertiary"
-									data-size="sm"
-									data-icon
-									popovertarget={`menu-${item.id}`}
-									data-tooltip="Behandle"
-									aria-label="Behandle"
-								>
-									<span class="material-symbols-outlined" aria-hidden="true">more_vert</span>
-								</button>
-								<div class="ds-dropdown" data-placement="bottom-right" id={`menu-${item.id}`} popover>
-									<ul>
-										<li>
-											<button
-												type="button"
-												data-size="sm"
-												class="ds-button"
-												data-variant="tertiary"
-												onclick={() => removeFromCollection(item.id)}>
-												<span class="material-symbols-outlined" aria-hidden="true">delete</span>
-												Slett
-											</button>
-										</li>
-									</ul>
-								</div>
-							</div>
+			{#if visibleItems.length === 0}
+				<p>Ingen treff på {searchFilter}</p>
+			{/if}
 
-							<p class="ds-paragraph" data-size="sm">
-								Lagt til {formatDate(item.addedAt)}
-							</p>	
+			<ul class="items-grid">
+				{#each visibleItems as item (item.id)}
+					<li>
+						<div class="ds-card" data-color="neutral">
+							<div class="item-card">
+								<div class="item-card-header">
+									<h2 class="ds-heading" data-size="xs" title={item.name}>{item.name}</h2>
+									<span class="ds-tag" data-color="accent" data-size="sm">
+										{categoryName(item.categoryId)}
+									</span>	
+									<button
+										type="button"
+										class="ds-button"
+										data-variant="tertiary"
+										data-size="sm"
+										data-icon
+										popovertarget={`menu-${item.id}`}
+										data-tooltip="Behandle"
+										aria-label="Behandle"
+									>
+										<span class="material-symbols-outlined" aria-hidden="true">more_vert</span>
+									</button>
+									<div class="ds-dropdown" data-placement="bottom-end" id={`menu-${item.id}`} popover>
+										<ul>
+											<li>
+												<button
+													type="button"
+													data-size="sm"
+													class="ds-button"
+													data-variant="tertiary"
+													onclick={() => removeFromCollection(item.id)}>
+													<span class="material-symbols-outlined" aria-hidden="true">delete</span>
+													Slett
+												</button>
+											</li>
+										</ul>
+									</div>
+								</div>
+
+								<p class="ds-paragraph" data-size="sm">
+									Lagt til {formatDate(item.addedAt)}
+								</p>	
+							</div>
 						</div>
-					</div>
-				</li>
-			{/each}
-		</ul>
+					</li>
+				{/each}
+			</ul>
 		{/if}
 	{:else}
 		{#if !isRemoving}
@@ -297,6 +361,23 @@
 	position: absolute;
 	top: var(--ds-size-2);
 	right: var(--ds-size-2);
+}
+
+.items-manager {
+	display: flex;
+	gap: var(--ds-size-2);
+}
+.sort-menu {
+	min-width: 18rem;
+}
+
+.sort-menu-check {
+	width: 1.5rem;
+}
+
+.search-field {
+	flex: 1;
+	max-width: 30rem;
 }
 
 .items-manager-dialog-action-buttons {
