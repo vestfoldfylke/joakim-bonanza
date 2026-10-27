@@ -11,14 +11,16 @@ public static class ItemEndpoints
         {
             return await repository.GetAllItemsAsync();
         })
-        .WithName("GetItems");
+        .WithName("GetItems")
+        .RequireAuthorization();
 
         app.MapGet("/items/{id:guid}", async (Guid id, IItemRepository repository) =>
         {
             var item = await repository.GetItemByIdAsync(id);
             return item is null ? Results.NotFound() : Results.Ok(item);
         })
-        .WithName("GetItemById");
+        .WithName("GetItemById")
+        .RequireAuthorization();
 
         app.MapPost("/items", async (AddItemRequest request, IItemRepository repository) =>
         {
@@ -37,14 +39,16 @@ public static class ItemEndpoints
 
             return Results.CreatedAtRoute("GetItemById", new { id = item.Id }, item);
         })
-        .WithName("AddItem");
+        .WithName("AddItem")
+        .RequireAuthorization(p => p.RequireRole("Administrator"));
 
         app.MapDelete("/items/{id:guid}", async (Guid id, IItemRepository repository) =>
         {
             var deleted = await repository.RemoveItemAsync(id);
             return deleted ? Results.NoContent() : Results.NotFound();
         })
-        .WithName("RemoveItem");
+        .WithName("RemoveItem")
+        .RequireAuthorization(p => p.RequireRole("Administrator"));
 
     }
 }

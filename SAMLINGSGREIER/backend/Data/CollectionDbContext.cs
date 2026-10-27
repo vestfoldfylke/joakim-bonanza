@@ -6,6 +6,8 @@ namespace Backend.Data;
 
 public class CollectionDbContext : DbContext
 {
+    public DbSet<Group> Groups { get; set; }
+    public DbSet<User> Users { get; set; }
     public DbSet<Item> Items { get; set; }
     public DbSet<Category> Categories { get; set; }
 
@@ -19,6 +21,9 @@ public class CollectionDbContext : DbContext
 
         var konsollerId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
         var musikkId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
+
+        var adminGroupId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc");
+        var userGroupId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd");
 
         modelBuilder.Entity<Category>().HasData(
             new
@@ -53,6 +58,32 @@ public class CollectionDbContext : DbContext
                 AddedAt = new DateTime(2026, 9, 28, 0, 0, 0, DateTimeKind.Utc)
             }
         );
-    }
 
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Username)
+            .IsUnique();
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.Username)
+            .UseCollation("NOCASE");
+
+        modelBuilder.Entity<User>()
+            .HasOne<Group>()
+            .WithMany()
+            .HasForeignKey(u => u.GroupId);
+
+
+        modelBuilder.Entity<Group>().HasData(
+            new
+            {
+                Id = adminGroupId,
+                Name = "Administrator"
+            },
+            new
+            {
+                Id = userGroupId,
+                Name = "Bruker"
+            }
+        );
+    }
 }
