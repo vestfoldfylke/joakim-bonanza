@@ -23,7 +23,7 @@
 
 	onMount(async () => {
 		try {
-			const [itemsRes, categoriesRes] = await Promise.all([fetch(`${CLEAN_API_URL}/items`), fetch(`${CLEAN_API_URL}/categories`)])
+			const [itemsRes, categoriesRes] = await Promise.all([fetch(`${CLEAN_API_URL}/items`, { credentials: "include" }), fetch(`${CLEAN_API_URL}/categories`, { credentials: "include" })])
 			if (!itemsRes.ok) {
 				throw new Error(`(GET) Fetch error while getting items: ${itemsRes.status}`)
 			}
@@ -62,6 +62,7 @@
 		try {
 			const response = await fetch(`${CLEAN_API_URL}/items`, {
 				method: "POST",
+				credentials: "include",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ name: newItemName, categoryId: newItemCategory })
 			})
@@ -92,7 +93,8 @@
 		isRemoving = true
 		try {
 			const response = await fetch(`${CLEAN_API_URL}/items/${Id}`, {
-				method: "DELETE"
+				method: "DELETE",
+				credentials: "include"
 			})
 
 			if (!response.ok) {

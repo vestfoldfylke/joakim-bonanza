@@ -44,5 +44,5 @@ You can preview the production build with `npm run preview`.
 Create a .env file with the following:
 
 ```
-PUBLIC_API_URL=<url til api>
+PUBLIC_API_URL=/api
 ```

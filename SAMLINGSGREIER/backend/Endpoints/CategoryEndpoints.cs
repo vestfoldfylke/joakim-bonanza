@@ -10,6 +10,7 @@ public static class CategoryEndpoints
         {
             return await repository.GetAllCategoriesAsync();
         })
-        .WithName("GetCategories");
+        .WithName("GetCategories")
+        .RequireAuthorization(p => p.RequireRole("Administrator"));
     }
 }
